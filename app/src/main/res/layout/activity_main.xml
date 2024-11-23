@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:background="#9C3903"
+    >
+
+
+    <TextView
+        android:layout_width="309dp"
+        android:layout_height="189dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="70dp"
+        android:fontFamily="@font/font1"
+        android:gravity="center"
+        android:text="Prize"
+        android:textColor="#000000"
+        android:textSize="250dp" />
+
+    <TextView
+        android:id="@+id/continue_button"
+        android:layout_width="277dp"
+        android:layout_height="92dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/font1"
+        android:gravity="center"
+        android:text="continue"
+        android:textColor="#000000"
+        android:textSize="120dp" />
+
+    <TextView
+        android:id="@+id/no_losers"
+        android:layout_width="207dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:fontFamily="@font/font1"
+        android:gravity="center"
+        android:text="there are no losers only quiters"
+        android:textColor="#000000"
+        android:textSize="40dp" />
+
+
+</LinearLayout>
