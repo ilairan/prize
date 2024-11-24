@@ -50,7 +50,6 @@ public class DBHelper extends SQLiteOpenHelper {
         long result = db.insert(TABLE_NAME, null, contentValues);
         return result != -1;
     }
-
     public boolean updateUserdata(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
