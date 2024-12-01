@@ -9,10 +9,6 @@
     android:background="#9C3903"
     >
 
-
-
-
-
     <TextView
         android:layout_width="245dp"
         android:layout_height="119dp"

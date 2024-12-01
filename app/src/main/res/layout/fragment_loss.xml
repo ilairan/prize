@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#9C3903">
+
+    <!-- Horizontal LinearLayout for the first part -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_weight="0"
+
+        >
+
+    </LinearLayout>
+
+
+
+
+    <!-- Vertical LinearLayout for the second part -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:textColor="#000000">
+
+        <TextView
+            android:id="@+id/big_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="You lose"
+            android:textSize="200dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            />
+
+        <TextView
+            android:id="@+id/score_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/font1"
+            android:text=""
+            android:textColor="#000000"
+            android:textSize="180dp" />
+
+        <TextView
+            android:id="@+id/playAgainButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="Play agian"
+            android:textSize="150dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            />
+
+        <TextView
+            android:id="@+id/MainMenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="Main menu"
+            android:textSize="100dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            />
+    </LinearLayout>
+
+</LinearLayout>
