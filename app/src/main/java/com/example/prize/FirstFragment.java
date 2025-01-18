@@ -1,6 +1,7 @@
 package com.example.prize;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,7 +129,6 @@ public class FirstFragment extends Fragment {
         playerHand.add(deck.drawCard());
         playerHand.add(deck.drawCard());
         dealerHand.add(deck.drawCard());
-        dealerHand.add(deck.drawCard());
 
         updateUI();
     }
@@ -167,13 +167,17 @@ public class FirstFragment extends Fragment {
     private void playerHit() {
         playerHand.add(deck.drawCard());
         updateUI();
-
         if (calculateScore(playerHand) > 21) {
             statusMessageTextView.setText("Player Busts!");
             disableButtons();
-            openResultFragment(new LossFragment());
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    openResultFragment(new LossFragment());                }
+            }, 1500);
         }
-    }
+        }
+
 
     private void playerStand() {
         while (calculateScore(dealerHand) < 17) {
@@ -187,17 +191,36 @@ public class FirstFragment extends Fragment {
         if (dealerScore > 21 || playerScore > dealerScore) {
             statusMessageTextView.setText("Player Wins!");
             disableButtons();
-            openResultFragment(new winFragment());
+            // Delay the fragment transition by 3 seconds (3000 milliseconds)
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    openResultFragment(new winFragment());
+                }
+            }, 1500);
         } else if (dealerScore == playerScore) {
-            statusMessageTextView.setText("Push!");
+            statusMessageTextView.setText("Draw!");
             disableButtons();
-            openResultFragment(new TieFragment());
+            // Delay the fragment transition by 3 seconds (3000 milliseconds)
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    openResultFragment(new TieFragment());
+                }
+            }, 1500);
         } else {
             statusMessageTextView.setText("Dealer Wins!");
             disableButtons();
-            openResultFragment(new LossFragment());
+            // Delay the fragment transition by 3 seconds (3000 milliseconds)
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    openResultFragment(new LossFragment());
+                }
+            }, 1500);
         }
     }
+
 
     private void disableButtons() {
         hitButton.setEnabled(false);
