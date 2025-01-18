@@ -46,7 +46,7 @@ public class Main_menu extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadFragment(new SecondFragment());
+                loadFragment(new ShakeToMixFragment());
                 toggleVisibility(false);
             }
         });

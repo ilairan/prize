@@ -46,7 +46,7 @@ public class TieFragment extends Fragment {
         playAgainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirstFragment fragment = new FirstFragment();
+                ShakeToMixFragment fragment = new ShakeToMixFragment();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 if (fragmentManager != null) {
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

@@ -28,26 +28,26 @@ public class LossFragment extends Fragment {
         mainmenu = view.findViewById(R.id.MainMenuButton);
         scoreTextView = view.findViewById(R.id.score_text_view);
 
-                // Retrieve the scores from the arguments
-                Bundle bundle = getArguments();
-                if (bundle != null) {
-                    int playerScore = bundle.getInt("playerScore", 0); // Ensure key name matches
-                    int dealerScore = bundle.getInt("dealerScore", 0); // Ensure key name matches
+        // Retrieve the scores from the arguments
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            int playerScore = bundle.getInt("playerScore", 0); // Ensure key name matches
+            int dealerScore = bundle.getInt("dealerScore", 0); // Ensure key name matches
 
-                    // Log the received scores to debug
-                    Log.d("LossFragment", "Received Player Score: " + playerScore);
-                    Log.d("LossFragment", "Received Dealer Score: " + dealerScore);
+            // Log the received scores to debug
+            Log.d("LossFragment", "Received Player Score: " + playerScore);
+            Log.d("LossFragment", "Received Dealer Score: " + dealerScore);
 
-                    // Display the scores
-                    scoreTextView.setText(dealerScore + " - " + playerScore);
-                } else {
-                    Log.d("LossFragment", "Bundle is null");
-                }
+            // Display the scores
+            scoreTextView.setText(dealerScore + " - " + playerScore);
+        } else {
+            Log.d("LossFragment", "Bundle is null");
+        }
 
         playAgainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirstFragment fragment = new FirstFragment();
+                ShakeToMixFragment fragment = new ShakeToMixFragment();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 if (fragmentManager != null) {
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -70,4 +70,5 @@ public class LossFragment extends Fragment {
         return view;
     }
 }
+
 
