@@ -1,0 +1,64 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9C3903"
+    android:fitsSystemWindows="true">
+
+    <!-- Score aligned to top-right -->
+    <TextView
+        android:id="@+id/scoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/font1"
+        android:text="Score: N/A"
+        android:textColor="#000000"
+        android:textSize="40sp" />
+
+    <!-- Big "You Win" centered -->
+    <TextView
+        android:id="@+id/big_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/scoreTextView"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/font1"
+        android:text="You Win"
+        android:textColor="#000000"
+        android:textSize="200sp"
+        android:textStyle="bold" />
+
+    <!-- Play Again button -->
+    <TextView
+        android:id="@+id/playAgainButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/big_text_view"
+        android:layout_marginTop="50dp"
+        android:text="Play Again"
+        android:textSize="150sp"
+        android:textColor="#000000"
+        android:fontFamily="@font/font1" />
+
+    <!-- Main Menu button -->
+    <TextView
+        android:id="@+id/MainMenuButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/playAgainButton"
+        android:layout_marginTop="50dp"
+        android:text="Main Menu"
+        android:textSize="100sp"
+        android:textColor="#000000"
+        android:fontFamily="@font/font1" />
+
+</RelativeLayout>
+
+
+

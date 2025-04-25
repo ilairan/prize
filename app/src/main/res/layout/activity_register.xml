@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9C3903"
+    android:orientation="vertical"
+    tools:context=".Register_activity"
+    android:id="@+id/background_layout"
+    tools:ignore="ExtraText">
+
+>
+
+
+
+
+    <TextView
+        android:layout_width="245dp"
+        android:layout_height="119dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/font1"
+        android:gravity="center"
+        android:text="Prize"
+        android:textColor="#000000"
+        android:textSize="160dp" />
+
+    <EditText
+        android:id="@+id/fullname_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="Enter full name"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="50dp"
+        android:textSize="20dp"
+        android:layout_marginEnd="50dp"/>
+    <EditText
+        android:id="@+id/email_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="Enter email"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="50dp"
+        android:textSize="20dp"
+        android:layout_marginEnd="50dp"/>
+
+    <EditText
+        android:id="@+id/phone_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="Enter phone number"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="50dp"
+        android:textSize="20dp"
+        android:layout_marginEnd="50dp"/>
+
+
+
+    <EditText
+        android:id="@+id/password_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="Enter password"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="50dp"
+        android:textSize="20dp"
+        android:layout_marginEnd="50dp"/>
+    <EditText
+        android:id="@+id/password_repeat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:hint="repeat password"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="50dp"
+        android:textSize="20dp"
+        android:layout_marginEnd="50dp"/>
+    <TextView
+        android:id="@+id/register_button"
+        android:layout_width="219dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/font1"
+        android:gravity="center"
+        android:text="Register"
+        android:textColor="#000000"
+        android:textSize="80dp" />
+
+    <TextView
+        android:id="@+id/back_register"
+        android:layout_width="188dp"
+        android:layout_height="75dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/font1"
+        android:gravity="center"
+        android:text="alredy signed up
+press here"
+        android:textColor="#000000"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/advance_buttom"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/font1"
+        android:gravity="center"
+        android:text="advence"
+        android:textColor="#000000"
+        android:textSize="80dp" />
+
+</LinearLayout>
