@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +26,18 @@ public class FirstFragment extends Fragment {
     private Deck deck;
     private List<Card> dealerHand;
     private List<Card> playerHand;
+
     private TextView dealerScoreTextView;
     private TextView playerScoreTextView;
     private TextView statusMessageTextView;
     private Button hitButton;
     private Button standButton;
-    private Button playAgainButton;
     private TextView backButton;
+
+    private RecyclerView dealerRecyclerView;
+    private RecyclerView playerRecyclerView;
+    private CardAdapter dealerAdapter;
+    private CardAdapter playerAdapter;
 
     private String username;
     private int betAmount;
@@ -49,8 +56,10 @@ public class FirstFragment extends Fragment {
         statusMessageTextView = view.findViewById(R.id.statusMessage);
         hitButton = view.findViewById(R.id.hitButton);
         standButton = view.findViewById(R.id.standButton);
-        playAgainButton = view.findViewById(R.id.playAgainButton);
         backButton = view.findViewById(R.id.backButton);
+
+        dealerRecyclerView = view.findViewById(R.id.dealerRecyclerView);
+        playerRecyclerView = view.findViewById(R.id.playerRecyclerView);
 
         // Initialize deck and hands
         deck = new Deck();
@@ -61,8 +70,6 @@ public class FirstFragment extends Fragment {
         if (getArguments() != null) {
             betAmount = getArguments().getInt("betAmount", 10);
             Log.d("FirstFragment", "Received BetAmount from Bundle: " + betAmount);
-        } else {
-            Log.d("FirstFragment", "No Bundle received");
         }
 
         // Get username from SharedPreferences
@@ -73,9 +80,17 @@ public class FirstFragment extends Fragment {
         dbHelper = new DBHelper(requireContext());
         playerScoreInDb = dbHelper.getScore(username);
 
-        // Log user and score
-        Log.d("FirstFragment", "Username from SharedPreferences: " + username);
-        Log.d("FirstFragment", "Score from DB: " + playerScoreInDb);
+        Log.d("FirstFragment", "Username: " + username + ", Score: " + playerScoreInDb);
+
+        // Setup RecyclerViews
+        dealerAdapter = new CardAdapter(dealerHand);
+        playerAdapter = new CardAdapter(playerHand);
+
+        dealerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        dealerRecyclerView.setAdapter(dealerAdapter);
+
+        playerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        playerRecyclerView.setAdapter(playerAdapter);
 
         // Start game
         startGame();
@@ -83,7 +98,6 @@ public class FirstFragment extends Fragment {
         // Button listeners
         hitButton.setOnClickListener(v -> playerHit());
         standButton.setOnClickListener(v -> playerStand());
-        playAgainButton.setOnClickListener(v -> playAgain());
         backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         return view;
@@ -100,9 +114,6 @@ public class FirstFragment extends Fragment {
         dealerHand.add(deck.drawCard());
 
         statusMessageTextView.setText("Your turn!");
-
-        // Button visibility
-        playAgainButton.setVisibility(View.GONE);
         hitButton.setEnabled(true);
         standButton.setEnabled(true);
 
@@ -115,31 +126,28 @@ public class FirstFragment extends Fragment {
 
         dealerScoreTextView.setText("Dealer: " + dealerScore);
         playerScoreTextView.setText("Player: " + playerScore);
+
+        dealerAdapter.notifyDataSetChanged();
+        playerAdapter.notifyDataSetChanged();
     }
 
     private int calculateScore(List<Card> hand) {
         int score = 0;
         int aceCount = 0;
-
         for (Card card : hand) {
             score += card.getValue();
-            if (card.getRank().equals("Ace")) {
-                aceCount++;
-            }
+            if (card.getRank().equals("Ace")) aceCount++;
         }
-
         while (score > 21 && aceCount > 0) {
             score -= 10;
             aceCount--;
         }
-
         return score;
     }
 
     private void playerHit() {
         playerHand.add(deck.drawCard());
         updateUI();
-
         if (calculateScore(playerHand) > 21) {
             statusMessageTextView.setText("Player Busts!");
             disableButtons();
@@ -174,30 +182,22 @@ public class FirstFragment extends Fragment {
     private void disableButtons() {
         hitButton.setEnabled(false);
         standButton.setEnabled(false);
-        playAgainButton.setVisibility(View.VISIBLE);
-    }
-
-    private void playAgain() {
-        startGame();
     }
 
     private void openResultFragment(Fragment fragment, @Nullable Boolean playerWins) {
-        // Update score in DB
         if (playerWins != null) {
             int newScore = playerScoreInDb;
             if (playerWins) {
                 newScore += betAmount;
-                Log.d("FirstFragment", "Player wins! Adding betAmount: " + betAmount);
             } else {
                 newScore -= betAmount;
-                Log.d("FirstFragment", "Player loses! Subtracting betAmount: " + betAmount);
             }
+// Prevent score from going below 0
+            newScore = Math.max(newScore, 0);
             dbHelper.updateScore(username, newScore);
-            playerScoreInDb = newScore;
-            Log.d("FirstFragment", "Updated score in DB: " + playerScoreInDb);
+
         }
 
-        // Pass only betAmount via Bundle
         Bundle bundle = new Bundle();
         bundle.putInt("betAmount", betAmount);
         fragment.setArguments(bundle);
@@ -208,8 +208,6 @@ public class FirstFragment extends Fragment {
         transaction.commit();
     }
 }
-
-
 
 
 

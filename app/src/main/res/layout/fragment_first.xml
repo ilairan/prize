@@ -1,381 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9C3903">
+    android:background="#9C3903"
+    android:padding="16dp">
 
+    <!-- Dealer Score -->
+    <TextView
+        android:id="@+id/dealerScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dealer: 0"
+        android:textSize="20sp"
+        android:textColor="#000000"/>
+
+    <!-- Dealer Cards RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dealerRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:overScrollMode="never"/>
+
+    <!-- Player Score -->
+    <TextView
+        android:id="@+id/playerScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player: 0"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:layout_marginTop="32dp"/>
+
+    <!-- Player Cards RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playerRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:overScrollMode="never"/>
+
+    <!-- Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/dealerScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dealer: 0"
-            android:textSize="20sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
-
-            <!-- Dealer Cards -->
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_weight="0.41"
-                android:layout_marginLeft="30dp">
-
-                <ImageView
-                    android:id="@+id/dealerCard1"
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/card"
-                    android:contentDescription="Dealer Card 1" />
-
-                <ImageView
-                    android:id="@+id/dealerCard1Mid"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="Dealer Card 1 Suit"
-                    android:src="@drawable/ic_launcher_foreground" />
-
-                <TextView
-                    android:id="@+id/dealerCard1TopLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:padding="4dp"
-                    android:layout_marginLeft="9dp"/>
-                <TextView
-                    android:id="@+id/dealerCard1BottomRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:gravity="center"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:padding="4dp"
-                    android:layout_marginRight="9dp"/>
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_weight="0.41"
-                android:layout_marginLeft="30dp">
-
-                <ImageView
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/card"
-                    android:contentDescription="Dealer Card 2"
-                    android:id="@+id/dealerCard2"
-                    />
-
-                <ImageView
-                    android:id="@+id/dealerCard2Mid"
-                    android:layout_width="30dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="Dealer Card 2 Suit"
-                    android:src="@drawable/ic_launcher_foreground" />
-
-                <TextView
-                    android:id="@+id/dealerCard2TopLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    android:layout_marginLeft="9dp"
-                    android:padding="4dp"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-                <TextView
-                    android:id="@+id/dealerCard2BottomRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:gravity="center"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:padding="4dp"
-                    android:layout_marginRight="9dp"/>
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_weight="0.41"
-                android:layout_marginLeft="30dp">
-
-                <ImageView
-                    android:id="@+id/dealerCard3"
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/card"
-                    android:contentDescription="Dealer Card 3" />
-
-                <ImageView
-                    android:id="@+id/dealerCard3Mid"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_launcher_foreground"
-                    android:contentDescription="Dealer Card 3 Suit" />
-
-                <TextView
-                    android:id="@+id/dealerCard3TopLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    android:layout_marginLeft="9dp"
-                    android:padding="4dp"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"  />
-
-                <TextView
-                    android:id="@+id/dealerCard3BottomRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:layout_marginRight="9dp"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-            </FrameLayout>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/playerScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Player: 0"
-            android:textSize="20sp"
-            android:layout_marginTop="32dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp">
-
-            <!-- Player Cards -->
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_weight="0.41"
-                android:layout_marginLeft="30dp">
-
-                <ImageView
-                    android:id="@+id/playerCard1"
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/card"
-                    android:contentDescription="Player Card 1" />
-
-                <ImageView
-                    android:id="@+id/playerCard1Mid"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="Player Card 1 Suit"
-                    android:src="@drawable/ic_launcher_foreground" />
-
-                <TextView
-                    android:id="@+id/playerCard1TopLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:padding="4dp"
-                    android:layout_marginLeft="9dp"/>
-                <TextView
-                    android:id="@+id/playerCard1BottomRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:gravity="center"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:padding="4dp"
-                    android:layout_marginRight="9dp"/>
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_weight="0.41"
-                android:layout_marginLeft="30dp">
-
-                <ImageView
-                    android:id="@+id/playerCard2"
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/card"
-                    android:contentDescription="Player Card 2" />
-
-                <ImageView
-                    android:id="@+id/playerCard2Mid"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_launcher_foreground"
-                    android:contentDescription="Player Card 2 Suit" />
-
-                <TextView
-                    android:id="@+id/playerCard2TopLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    android:layout_marginLeft="9dp"
-                    android:padding="4dp"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-
-                <TextView
-                    android:id="@+id/playerCard2BottomRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:layout_marginRight="9dp"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="120dp"
-                android:layout_weight="0.41"
-                android:layout_marginLeft="30dp">
-
-                <ImageView
-                    android:id="@+id/playerCard3"
-                    android:layout_width="90dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/card"
-                    android:contentDescription="Player Card 3" />
-
-                <ImageView
-                    android:id="@+id/playerCard3Mid"
-                    android:layout_width="34dp"
-                    android:layout_height="36dp"
-                    android:layout_gravity="center"
-                    android:contentDescription="Player Card 3 Suit"
-                    android:src="@drawable/ic_launcher_foreground" />
-
-                <TextView
-                    android:id="@+id/playerCard3TopLeft"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|left"
-                    android:layout_marginLeft="9dp"
-                    android:padding="4dp"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"  />
-                <TextView
-                    android:id="@+id/playerCard3BottomRight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:gravity="center"
-                    android:text="A"
-                    android:textColor="#000000"
-                    android:textSize="24sp"
-                    android:padding="4dp"
-                    android:layout_marginRight="9dp"/>
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="32dp">
-
-            <Button
-                android:id="@+id/hitButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hit" />
-
-            <Button
-                android:id="@+id/standButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stand"
-                android:layout_marginStart="16dp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/statusMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Status"
-            android:textSize="18sp"
-            android:layout_marginTop="32dp"
-            android:gravity="center" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="32dp">
 
         <Button
-            android:id="@+id/playAgainButton"
+            android:id="@+id/hitButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play Again"
-            android:layout_marginTop="800dp"
-            android:layout_marginBottom="20dp"
-            android:gravity="bottom"
-            android:layout_gravity="center" />
+            android:text="Hit" />
 
-        <TextView
-            android:id="@+id/backButton"
+        <Button
+            android:id="@+id/standButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/font1"
-            android:gravity="center"
-            android:text="Back"
-            android:textColor="#000000"
-            android:textSize="30sp" />
+            android:text="Stand"
+            android:layout_marginStart="16dp" />
     </LinearLayout>
 
-</ScrollView>
+    <!-- Status Message -->
+    <TextView
+        android:id="@+id/statusMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"/>
+
+    <!-- Play Again Button -->
+
+
+    <!-- Back Button -->
+    <TextView
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:textSize="30sp"
+        android:textColor="#000000"
+        android:fontFamily="@font/font1"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"/>
+</LinearLayout>
+
 
 
 
