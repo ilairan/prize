@@ -9,6 +9,13 @@
     tools:context=".Main_menu"
     android:background="#9C3903">
 
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_marginTop="?attr/actionBarSize"/>
+
     <TextView
         android:id="@+id/scoreTextView"
         android:layout_width="wrap_content"
@@ -80,11 +87,6 @@
             />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_marginTop="?attr/actionBarSize"/>
+
 </LinearLayout>
 

@@ -56,6 +56,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
             bottomRight = itemView.findViewById(R.id.card_bottom_right);
             center = itemView.findViewById(R.id.card_center);
             background = itemView.findViewById(R.id.card_background);
+
         }
     }
 
@@ -74,4 +75,5 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                 return "?";
         }
     }
+
 }
