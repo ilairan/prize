@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#9C3903"
+    >
+
+    <EditText
+        android:id="@+id/editName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:fontFamily="@font/font1"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:textColor="#000000"
+                />
+
+    <EditText
+        android:id="@+id/editEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:fontFamily="@font/font1"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:textColor="#000000"/>
+
+    <EditText
+        android:id="@+id/editPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number"
+        android:inputType="phone"
+        android:fontFamily="@font/font1"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:textColor="#000000"/>
+
+    <EditText
+        android:id="@+id/editPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:fontFamily="@font/font1"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:textColor="#000000"/>
+
+</LinearLayout>

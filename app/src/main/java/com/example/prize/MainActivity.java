@@ -2,6 +2,7 @@ package com.example.prize;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -22,6 +23,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Start Music Service if not already running
+        if (!isMyServiceRunning(MusicService.class)) {
+            Intent serviceIntent = new Intent(this, MusicService.class);
+            startService(serviceIntent);
+        }
+ // Don't use startForegroundService here
 
         // Request notification permission (Android 13+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -52,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    // Start MusicService (if not running)
+
 
     // Schedule a daily notification at the given time
     private void scheduleDailyNotification(Context context, String message, int hour, int minute, int requestCode) {
@@ -97,6 +108,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
+
 
 
