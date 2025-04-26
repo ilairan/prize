@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsFragment"
+    android:background="#9C3903"
+    >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <!-- Music Volume -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Music Volume"
+            android:textSize="40sp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"/>
+
+        <SeekBar
+            android:id="@+id/musicVolumeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            />
+
+        <!-- Sound Effects Volume -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sound Effects Volume"
+            android:textSize="40sp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"/>
+
+        <SeekBar
+            android:id="@+id/sfxVolumeSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"/>
+
+        <!-- Notifications Toggle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enable Notifications"
+            android:textSize="40sp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"/>
+
+        <Switch
+            android:id="@+id/notificationsSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- Change User Details -->
+        <TextView
+            android:id="@+id/changeDetailsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change User Details"
+            android:textSize="40sp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"/>
+
+        <!-- Logout -->
+        <TextView
+            android:id="@+id/logoutButton"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:textSize="40sp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="300sp"
+           />
+            />
+
+        <!-- Back Button -->
+        <TextView
+            android:layout_gravity="bottom"
+            android:id="@+id/Back_buttom"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="20sp"
+            android:fontFamily="@font/font1"
+            android:gravity="center"
+            android:text="Back"
+            android:textColor="#000000"
+            android:textSize="80dp" />
+
+    </LinearLayout>
+</ScrollView>
