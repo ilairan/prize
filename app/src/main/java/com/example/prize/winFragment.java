@@ -42,6 +42,7 @@ public class winFragment extends Fragment {
         SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         username = sharedPref.getString("username", "defaultUser");
 
+
         // Get updated score from DB
         dbHelper = new DBHelper(requireContext());
         updatedScore = dbHelper.getScore(username);
@@ -49,22 +50,39 @@ public class winFragment extends Fragment {
         // Show the score
         scoreTextView.setText("" + updatedScore);
 
-        // Play Again → Go to BetAmount fragment
         playAgainButton.setOnClickListener(v -> {
             BetAmount betAmountFragment = new BetAmount();
-            // No need to pass score, only betAmount will be bundled later
-            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.frameLayout, betAmountFragment);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.frameLayout, betAmountFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
-        // Main Menu → Back to Main_menu activity
+        // Main Menu button → Back to Main_menu Activity
         mainmenu.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), Main_menu.class);
             startActivity(intent);
         });
+        username = sharedPref.getString("username", "defaultUser");
+        if (!username.equals("defaultUser")) {
+            // Games played
+            int gamesPlayed = dbHelper.getGamesPlayed(username);
+            dbHelper.updateGamesPlayed(username, gamesPlayed + 1);
 
+            // Games won
+            int gamesWon = dbHelper.getGamesWon(username);
+            dbHelper.updateGamesWon(username, gamesWon + 1);
+
+            // Current win streak
+            int currentWinStreak = dbHelper.getCurrentWinStreak(username);
+            dbHelper.updateCurrentWinStreak(username, currentWinStreak + 1);
+
+            // Longest win streak
+            int longestWinStreak = dbHelper.getLongestWinStreak(username);
+            if (currentWinStreak + 1 > longestWinStreak) {
+                dbHelper.updateLongestWinStreak(username, currentWinStreak + 1);
+            }
+        }
         return view;
     }
 }

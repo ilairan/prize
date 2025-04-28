@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9C3903">
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Trophy Room Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trophy Room"
+            android:textSize="50sp"
+            android:layout_gravity="center"
+            android:textColor="#FFFFFF"
+            android:fontFamily="@font/font1"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Total Wins Category -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Wins"
+            android:textSize="30sp"
+            android:textColor="#FFD700"
+            android:fontFamily="@font/font1"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Example medals (use different images for locked/unlocked) -->
+            <ImageView android:id="@+id/wins_10"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/bronze_gameswon"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/wins_100"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/silver_gameswon"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/wins_500"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/gold_gameswon"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/wins_1000"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/purple_gameswon"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Win Streaks Category -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Win Streaks"
+            android:textSize="30sp"
+            android:textColor="#FFD700"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView android:id="@+id/streak_3"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/bronze_winstreak"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/streak_5"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/silver_winstreak"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/streak_20"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/gold_winstreak"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/streak_50"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/purple_winstreak"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Cards Drawn Category -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cards Drawn"
+            android:textSize="30sp"
+            android:textColor="#FFD700"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView android:id="@+id/cards_100"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/medal100"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/cards_500"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/medal500"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/cards_1000"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/medal1000"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/cards_5000"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/medal5000"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- Largest Bet Category -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Largest Bet"
+            android:textSize="30sp"
+            android:textColor="#FFD700"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView android:id="@+id/bet_100"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/medal100"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/bet_500"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/medal500"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/bet_1000"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="8dp"
+                android:src="@drawable/medal1000"
+                android:visibility="gone"/>
+
+            <ImageView android:id="@+id/bet_5000"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/medal5000"
+                android:layout_margin="8dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_gravity="bottom"
+                android:id="@+id/Back_buttom"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="20sp"
+                android:fontFamily="@font/font1"
+                android:gravity="center"
+                android:text="Back"
+                android:textColor="#000000"
+                android:textSize="80dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

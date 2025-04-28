@@ -12,12 +12,13 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Userdata.db";
-    private static final int DATABASE_VERSION = 2; // Bumped version for settings
+    private static final int DATABASE_VERSION = 3;  // Updated version
     private static final String TABLE_NAME = "Userdetails";
     private static final String COL_NAME = "name";
     private static final String COL_EMAIL = "email";
     private static final String COL_PHONE_NUM = "phone_num";
     private static final String COL_PASSWORD = "password";
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,19 +32,38 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_PHONE_NUM + " TEXT, " +
                 COL_PASSWORD + " TEXT, " +
                 "score INTEGER DEFAULT 100, " +
-                "music_volume INTEGER DEFAULT 100, " + // New setting: music volume (0-100)
-                "sound_effects_volume INTEGER DEFAULT 100, " + // New setting: sound effects volume (0-100)
-                "notifications_enabled INTEGER DEFAULT 1)"; // New setting: notifications toggle (1=true, 0=false)
+                "music_volume INTEGER DEFAULT 100, " +
+                "sound_effects_volume INTEGER DEFAULT 100, " +
+                "notifications_enabled INTEGER DEFAULT 1, " +
+                "games_played INTEGER DEFAULT 0, " +
+                "games_won INTEGER DEFAULT 0, " +
+                "games_lost INTEGER DEFAULT 0, " +
+                "games_tied INTEGER DEFAULT 0, " +
+                "current_win_streak INTEGER DEFAULT 0, " +
+                "longest_win_streak INTEGER DEFAULT 0, " +
+                "total_cards_drawn INTEGER DEFAULT 0, " +
+                "largest_bet INTEGER DEFAULT 0)";
+                // Add this to the create table statement
+
         db.execSQL(createTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Add columns if upgrading from older version
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN music_volume INTEGER DEFAULT 100");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN sound_effects_volume INTEGER DEFAULT 100");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN notifications_enabled INTEGER DEFAULT 1");
+        }
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN games_played INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN games_won INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN games_lost INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN games_tied INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN current_win_streak INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN longest_win_streak INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN total_cards_drawn INTEGER DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN largest_bet INTEGER DEFAULT 0");
         }
     }
 
@@ -62,6 +82,16 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
         return volume;
     }
+    private void updateStat(String email, String column, int value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(column, value);
+        db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
+    }
+
+
+
+
 
     public void setMusicVolume(String email, int volume) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -189,14 +219,6 @@ public boolean insertUserdata(User user) {
         return score;
     }
 
-
-    public void updateScore(String email, int newScore) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("score", newScore);
-        db.update(TABLE_NAME, contentValues, COL_EMAIL + "=?", new String[]{email});
-    }
-
     public User getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE email = ?", new String[]{email});
@@ -210,6 +232,55 @@ public boolean insertUserdata(User user) {
         cursor.close();
         return user;
     }
+
+
+    public void updateScore(String email, int newScore) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("score", newScore);
+        db.update(TABLE_NAME, contentValues, COL_EMAIL + "=?", new String[]{email});
+    }
+
+    // General get stat
+    private int getStatByUsername(String username, String column) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + column + " FROM " + TABLE_NAME + " WHERE email = ?", new String[]{username});
+        int stat = 0;
+        if (cursor.moveToFirst()) {
+            stat = cursor.getInt(cursor.getColumnIndexOrThrow(column));
+        }
+        cursor.close();
+        return stat;
+    }
+
+    // General update stat
+    private void updateStatByUsername(String username, String column, int value) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(column, value);
+        db.update(TABLE_NAME, contentValues, "email=?", new String[]{username});
+    }
+
+    // Public getters
+    public int getGamesPlayed(String username) { return getStatByUsername(username, "games_played"); }
+    public int getGamesWon(String username) { return getStatByUsername(username, "games_won"); }
+    public int getGamesLost(String username) { return getStatByUsername(username, "games_lost"); }
+    public int getGamesTied(String username) { return getStatByUsername(username, "games_tied"); }
+    public int getCurrentWinStreak(String username) { return getStatByUsername(username, "current_win_streak"); }
+    public int getLongestWinStreak(String username) { return getStatByUsername(username, "longest_win_streak"); }
+    public int getTotalCardsDrawn(String username) { return getStatByUsername(username, "total_cards_drawn"); }
+    public int getLargestBet(String username) { return getStatByUsername(username, "largest_bet"); }
+
+    // Public setters
+    public void updateGamesPlayed(String username, int value) { updateStatByUsername(username, "games_played", value); }
+    public void updateGamesWon(String username, int value) { updateStatByUsername(username, "games_won", value); }
+    public void updateGamesLost(String username, int value) { updateStatByUsername(username, "games_lost", value); }
+    public void updateGamesTied(String username, int value) { updateStatByUsername(username, "games_tied", value); }
+    public void updateCurrentWinStreak(String username, int value) { updateStatByUsername(username, "current_win_streak", value); }
+    public void updateLongestWinStreak(String username, int value) { updateStatByUsername(username, "longest_win_streak", value); }
+    public void updateTotalCardsDrawn(String username, int value) { updateStatByUsername(username, "total_cards_drawn", value); }
+    public void updateLargestBet(String username, int value) { updateStatByUsername(username, "largest_bet", value); }
+
 
 
 }

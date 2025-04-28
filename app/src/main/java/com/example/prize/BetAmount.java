@@ -75,12 +75,24 @@ public class BetAmount extends Fragment {
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", "defaultUser");
+        String finalUsername = username;
+
         // לחיצה על כפתור ההמשך
+
         continueButton.setOnClickListener(v -> {
             ShakeToMixFragment shakeFragment = new ShakeToMixFragment();
             Bundle args = new Bundle();
             args.putInt("betAmount", selectedBet);   // העברת סכום ההימור
-            args.putInt("score", playerScore);       // העברת הניקוד הנוכחי
+            args.putInt("score", playerScore);
+            int largestbet = dbHelper.getLargestBet(finalUsername);
+            if(largestbet<selectedBet){
+                largestbet = selectedBet;
+            }
+            dbHelper.updateLargestBet(finalUsername, largestbet);
+
+            // העברת הניקוד הנוכחי
             shakeFragment.setArguments(args);
 
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -88,6 +100,9 @@ public class BetAmount extends Fragment {
             transaction.addToBackStack(null);
             transaction.commit();
         });
+
+
+
 
         return view;
     }

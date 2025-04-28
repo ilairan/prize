@@ -16,6 +16,7 @@ public class Main_menu extends AppCompatActivity {
     TextView button3;
     TextView textView;
     TextView scoreTextView;
+    TextView medals;
     DBHelper dbHelper;
 
     // משתנים ל-SharedPreferences
@@ -35,6 +36,7 @@ public class Main_menu extends AppCompatActivity {
         button3 = findViewById(R.id.button3);
         textView = findViewById(R.id.main_menu);
         scoreTextView = findViewById(R.id.scoreTextView);
+        medals = findViewById(R.id.Medals);
 
         // אתחול מסד נתונים
         dbHelper = new DBHelper(this);
@@ -58,6 +60,14 @@ public class Main_menu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadFragment(new SettingsFragment());
+                toggleVisibility(false);  // הסתרת התפריט הראשי
+            }
+        });
+
+        medals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadFragment(new AchievementsFragment());
                 toggleVisibility(false);  // הסתרת התפריט הראשי
             }
         });
@@ -86,7 +96,7 @@ public class Main_menu extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadFragment(new ShakeToMixFragment());
+                loadFragment(new StatisticsFragment());
                 toggleVisibility(false);  // הסתרת התפריט הראשי
             }
         });

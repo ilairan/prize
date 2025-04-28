@@ -32,18 +32,7 @@ public class TieFragment extends Fragment {
         mainmenu = view.findViewById(R.id.MainMenuButton);
         scoreTextView = view.findViewById(R.id.scoreTextView);
 
-        // Get username from SharedPreferences
-        SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        username = sharedPref.getString("username", "defaultUser");
 
-        // Fetch score from DB
-        dbHelper = new DBHelper(requireContext());
-        updatedScore = dbHelper.getScore(username);
-
-        // Display the score
-        scoreTextView.setText("" + updatedScore);
-
-        // Play Again button → Go to BetAmount fragment
         playAgainButton.setOnClickListener(v -> {
             BetAmount betAmountFragment = new BetAmount();
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -57,6 +46,37 @@ public class TieFragment extends Fragment {
             Intent intent = new Intent(getActivity(), Main_menu.class);
             startActivity(intent);
         });
+
+        // Get username from SharedPreferences
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", "defaultUser");
+
+        // Fetch score from DB
+        dbHelper = new DBHelper(requireContext());
+        updatedScore = dbHelper.getScore(username);
+
+        // Display the score
+        scoreTextView.setText("" + updatedScore);
+
+
+
+
+
+        username = sharedPref.getString("username", "defaultUser");
+
+        // === Update stats ===
+        if (!username.equals("defaultUser")) {
+            // Games played
+            int gamesPlayed = dbHelper.getGamesPlayed(username);
+            dbHelper.updateGamesPlayed(username, gamesPlayed + 1);
+
+            // Games won
+            int gamestied = dbHelper.getGamesWon(username);
+            dbHelper.updateGamesTied(username, gamestied + 1);
+        }
+
+        // Play Again button → Go to BetAmount fragment
+
 
         return view;
     }

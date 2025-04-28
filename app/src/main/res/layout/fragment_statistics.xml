@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#9C3903"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Statistics"
+            android:textSize="90dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginBottom="2sp"/>
+
+        <!-- Stats Fields -->
+        <TextView
+            android:id="@+id/gamesPlayed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Games Played: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/gamesWon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Games Won: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/gamesLost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Games Lost: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/gamesTied"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Games Tied: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/winRate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Win Rate: 0%"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/currentWinStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Win Streak: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/longestWinStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Longest Win Streak: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/totalCardsDrawn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Cards Drawn: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/largestBet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Largest Bet: 0"
+            android:textSize="50sp"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+        <!-- Back Button -->
+        <TextView
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textSize="50sp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:fontFamily="@font/font1"
+            android:layout_marginTop="10dp"/>
+
+
+    </LinearLayout>
+</ScrollView>
+

@@ -8,6 +8,7 @@ public class SoundEffectsManager {
     private SoundPool soundPool;
     private int cardDrawSound, winSound, loseSound;
     private float sfxVolume = 1.0f; // Default full volume
+    private static float globalVolume = 1.0f;
 
     public SoundEffectsManager(Context context) {
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
@@ -36,6 +37,9 @@ public class SoundEffectsManager {
 
     public void setSfxVolume(int volume) {
         this.sfxVolume = volume / 100f; // Allow manual override
+    }
+    public static void setGlobalVolume(float volume) {
+        globalVolume = volume;
     }
 
     public void playCardDraw() {

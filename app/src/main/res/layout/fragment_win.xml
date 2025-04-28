@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:fontFamily="@font/font1"
-        android:text="Draw"
+        android:text="you win"
         android:textColor="#000000"
         android:textSize="200sp"
         android:textStyle="bold" />

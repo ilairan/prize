@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class FirstFragment extends Fragment {
 
@@ -61,6 +62,9 @@ public class FirstFragment extends Fragment {
         dealerRecyclerView = view.findViewById(R.id.dealerRecyclerView);
         playerRecyclerView = view.findViewById(R.id.playerRecyclerView);
 
+        dbHelper = new DBHelper(requireContext());
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", "defaultUser");
         // Initialize deck and hands
         deck = new Deck();
         dealerHand = new ArrayList<>();
@@ -73,7 +77,7 @@ public class FirstFragment extends Fragment {
         }
 
         // Get username from SharedPreferences
-        SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+       // SharedPreferences sharedPref1 = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         username = sharedPref.getString("username", "defaultUser");
 
         // Initialize DBHelper and get score
@@ -103,10 +107,11 @@ public class FirstFragment extends Fragment {
     }
 
     private void startGame() {
+        int Cardsdrawn = dbHelper.getTotalCardsDrawn(username);
+        dbHelper.updateTotalCardsDrawn(username, Cardsdrawn + 2);
         dealerHand.clear();
         playerHand.clear();
         deck.shuffle();
-
         hitButton.setEnabled(false);  // Disable buttons during dealing
         standButton.setEnabled(false);
         statusMessageTextView.setText("Dealing cards...");
@@ -149,6 +154,8 @@ public class FirstFragment extends Fragment {
 
 
     private void playerHit() {
+        int Cardsdrawn = dbHelper.getTotalCardsDrawn(username);
+        dbHelper.updateTotalCardsDrawn(username, Cardsdrawn + 1);
         soundEffectsManager.playCardDraw();  // Play sound here
         playerHand.add(deck.drawCard());
         playerAdapter.notifyItemInserted(playerHand.size() - 1);
