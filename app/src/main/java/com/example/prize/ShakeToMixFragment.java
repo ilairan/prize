@@ -2,7 +2,7 @@ package com.example.prize;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.SharedPreferences; // שימוש ב-SharedPreferences
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,8 +21,8 @@ import androidx.fragment.app.Fragment;
 
 public class ShakeToMixFragment extends Fragment {
 
-    private static final double SHAKE_THRESHOLD = 10.0; // רמת רגישות לרעידה
-    private static final int SHAKE_DURATION = 1000;     // משך זיהוי הרעידה (מילישניות)
+    private static final double SHAKE_THRESHOLD = 8.0; /* הורדתי את סף הרגישות כדי שיהיה קל יותר לזהות רעידות */
+    private static final int SHAKE_DURATION = 500; /* קיצרתי את זמן האישור לזיהוי רעידה */
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
@@ -30,59 +30,54 @@ public class ShakeToMixFragment extends Fragment {
     private Handler handler;
     private boolean isShaking;
 
-    private TextView shakeMessage;
-    private TextView continueShuffle;
+    private TextView shakeMessage, continueShuffle;
 
-    private SharedPreferences sharedPreferences; // משתנה ל-SharedPreferences
+    private SharedPreferences sharedPreferences;
     private String username;
     private int betAmount;
 
-    private static final String PREF_NAME = "user_prefs";  // שם הקובץ
-    private static final String KEY_USERNAME = "username"; // מפתח לשם המשתמש
+    private static final String PREF_NAME = "user_prefs";
+    private static final String KEY_USERNAME = "username";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_shake_to_mix, container, false);
+        return inflater.inflate(R.layout.fragment_shake_to_mix, container, false);  /* טעינת תצוגת הפרגמנט */
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // אתחול SharedPreferences
         sharedPreferences = requireActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        username = sharedPreferences.getString(KEY_USERNAME, "defaultUser"); // שליפת שם המשתמש מה-SharedPreferences
+        username = sharedPreferences.getString(KEY_USERNAME, "defaultUser");  /* שליפת שם המשתמש */
 
-        // קבלת פרמטרים שהועברו (הימור וניקוד)
         if (getArguments() != null) {
-            betAmount = getArguments().getInt("betAmount", 10);  // הימור (ברירת מחדל 10)
+            betAmount = getArguments().getInt("betAmount", 10);  /* שליפת סכום ההימור */
         }
 
         Log.d("ShakeToMixFragment", "Username: " + username + ", BetAmount: " + betAmount);
 
-        shakeMessage = view.findViewById(R.id.shake_message);         // הודעת "SHAKE TO SHUFFLE"
-        continueShuffle = view.findViewById(R.id.continue_shuffle);   // כפתור המשך
+        shakeMessage = view.findViewById(R.id.shake_message);
+        continueShuffle = view.findViewById(R.id.continue_shuffle);
 
-        shakeMessage.setText("SHAKE TO SHUFFLE");
+        shakeMessage.setText("SHAKE TO SHUFFLE");  /* טקסט ראשי */
 
-        // לחיצה על כפתור המשך (ללא רעידה)
-        continueShuffle.setOnClickListener(v -> goToFirstFragment());
+        continueShuffle.setOnClickListener(v -> goToFirstFragment());  /* מעבר ידני לפרגמנט המשחק */
 
-        animateShakeMessage();  // אנימציה לטקסט shakeMessage (לא לכפתור)
+        animateShakeMessage();  /* אנימציה לטקסט */
 
-        // אתחול חיישנים
         sensorManager = (SensorManager) requireActivity().getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         handler = new Handler();
         isShaking = false;
 
-        setupSensorListener();  // רישום האזנה לחיישן
+        setupSensorListener();  /* אתחול האזנה לחיישן */
     }
 
     private void animateShakeMessage() {
-        // אנימציית שינוי גודל הטקסט
-        ValueAnimator animator = ValueAnimator.ofFloat(140f, 180f);
+        /* אנימציה לגודל הטקסט */
+        ValueAnimator animator = ValueAnimator.ofFloat(140f, 160f);  /* הקטנתי את טווח הגדלים */
         animator.setDuration(1000);
         animator.setRepeatMode(ValueAnimator.REVERSE);
         animator.setRepeatCount(ValueAnimator.INFINITE);
@@ -94,7 +89,7 @@ public class ShakeToMixFragment extends Fragment {
     }
 
     private void setupSensorListener() {
-        // מאזין לשינויים במד תאוצה
+        /* האזנה לחיישן תאוצה */
         sensorEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent event) {
@@ -102,12 +97,12 @@ public class ShakeToMixFragment extends Fragment {
                 float y = event.values[1];
                 float z = event.values[2];
 
-                double acceleration = Math.sqrt(x * x + y * y + z * z); // חישוב תאוצה כוללת
+                double acceleration = Math.sqrt(x * x + y * y + z * z) - SensorManager.GRAVITY_EARTH;  /* החסרת כוח הכבידה לשיפור הדיוק */
 
-                if (acceleration > SHAKE_THRESHOLD) { // זיהוי רעידה
+                if (acceleration > SHAKE_THRESHOLD) {
                     if (!isShaking) {
                         isShaking = true;
-                        handler.postDelayed(checkShakeRunnable, SHAKE_DURATION); // ממתין לאישור
+                        handler.postDelayed(checkShakeRunnable, SHAKE_DURATION);
                     }
                 } else {
                     isShaking = false;
@@ -115,8 +110,7 @@ public class ShakeToMixFragment extends Fragment {
                 }
             }
 
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+            @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {}
         };
 
         sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
@@ -124,16 +118,14 @@ public class ShakeToMixFragment extends Fragment {
 
     private final Runnable checkShakeRunnable = () -> {
         if (isShaking) {
-            goToFirstFragment(); // מעבר למשחק אם התבצעה רעידה
+            goToFirstFragment();  /* מעבר לפרגמנט המשחק */
         }
     };
 
     private void goToFirstFragment() {
-        // פתיחת FirstFragment עם נתוני המשתמש וההימור
         FirstFragment firstFragment = new FirstFragment();
         Bundle args = new Bundle();
-        args.putString("username", username);    // שם המשתמש
-        args.putInt("betAmount", betAmount);     // סכום ההימור
+        args.putInt("betAmount", betAmount);  /* שליחת סכום ההימור */
         firstFragment.setArguments(args);
 
         requireActivity().getSupportFragmentManager().beginTransaction()
@@ -144,11 +136,12 @@ public class ShakeToMixFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        // שחרור המשאבים של החיישן כשהמסך מושהה
+        /* ביטול רישום החיישן */
         sensorManager.unregisterListener(sensorEventListener);
         handler.removeCallbacks(checkShakeRunnable);
     }
 }
+
 
 
 

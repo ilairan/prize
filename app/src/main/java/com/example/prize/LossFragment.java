@@ -15,70 +15,62 @@ import android.widget.TextView;
 
 public class LossFragment extends Fragment {
 
-    TextView playAgainButton;
-    TextView mainmenu;
-
+    private TextView playAgainButton, mainmenu, scoreTextView;
     private String username;
     private int updatedScore;
     private DBHelper dbHelper;
-    private TextView scoreTextView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_loss, container, false);
 
+        // קישור רכיבי ה-XML
         playAgainButton = view.findViewById(R.id.playAgainButton);
         mainmenu = view.findViewById(R.id.MainMenuButton);
         scoreTextView = view.findViewById(R.id.scoreTextView);
 
-        playAgainButton.setOnClickListener(v -> {
-            BetAmount betAmountFragment = new BetAmount();
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.frameLayout, betAmountFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
-        });
-
-        // Main Menu button → Back to Main_menu Activity
-        mainmenu.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), Main_menu.class);
-            startActivity(intent);
-        });
-
-
-        // Get username from SharedPreferences
+        // שליפת שם המשתמש מ-SharedPreferences
         SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         username = sharedPref.getString("username", "defaultUser");
 
-        // Get updated score from DB
-        dbHelper = new DBHelper(requireContext());
-        updatedScore = dbHelper.getScore(username);
-        scoreTextView.setText("" + updatedScore);
-        username = sharedPref.getString("username", "defaultUser");
+        dbHelper = new DBHelper(requireContext());  // אתחול DBHelper
+        updatedScore = dbHelper.getScore(username);  // שליפת ניקוד עדכני מהמסד
 
-        // === Update stats ===
+        scoreTextView.setText(String.valueOf(updatedScore));  // הצגת הניקוד
+
+        // כפתור "שחק שוב" → מעבר לפרגמנט בחירת הימור
+        playAgainButton.setOnClickListener(v -> {
+            BetAmount betAmountFragment = new BetAmount();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.frameLayout, betAmountFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        // כפתור "תפריט ראשי" → מעבר ל-Activity הראשי
+        mainmenu.setOnClickListener(v -> startActivity(new Intent(getActivity(), Main_menu.class)));
+
+        // עדכון סטטיסטיקות אם המשתמש מחובר
         if (!username.equals("defaultUser")) {
-            // Games played
-            int gamesPlayed = dbHelper.getGamesPlayed(username);
-            dbHelper.updateGamesPlayed(username, gamesPlayed + 1);
-
-            // Games won
-            int gameslost = dbHelper.getGamesWon(username);
-            dbHelper.updateGamesLost(username, gameslost + 1);
-
-            // Current win streak
-            int currentWinStreak = dbHelper.getCurrentWinStreak(username);
-            dbHelper.updateCurrentWinStreak(username, 0);
-
+            updateStatistics();
         }
-
-
-
 
         return view;
     }
+
+    // פונקציה לעדכון הסטטיסטיקות במסד (משחקים ששוחקו, הפסדים ואיפוס רצף ניצחונות)
+    private void updateStatistics() {
+        int gamesPlayed = dbHelper.getGamesPlayed(username);
+        dbHelper.updateGamesPlayed(username, gamesPlayed + 1);
+
+        int gamesLost = dbHelper.getGamesLost(username);  // תיקון: שליפת הפסדים (ולא ניצחונות)
+        dbHelper.updateGamesLost(username, gamesLost + 1);
+
+        dbHelper.updateCurrentWinStreak(username, 0);  // איפוס רצף ניצחונות נוכחי
+    }
 }
+
 
 
 

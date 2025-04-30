@@ -11,14 +11,13 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "Userdata.db";
-    private static final int DATABASE_VERSION = 3;  // Updated version
-    private static final String TABLE_NAME = "Userdetails";
-    private static final String COL_NAME = "name";
-    private static final String COL_EMAIL = "email";
-    private static final String COL_PHONE_NUM = "phone_num";
-    private static final String COL_PASSWORD = "password";
-
+    private static final String DATABASE_NAME = "Userdata.db";  /* שם קובץ המסד */
+    private static final int DATABASE_VERSION = 3;              /* גרסה */
+    private static final String TABLE_NAME = "Userdetails";     /* שם הטבלה */
+    private static final String COL_NAME = "name";              /* שם המשתמש */
+    private static final String COL_EMAIL = "email";            /* אימייל */
+    private static final String COL_PHONE_NUM = "phone_num";    /* מספר טלפון */
+    private static final String COL_PASSWORD = "password";      /* סיסמה */
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,6 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        /* יצירת טבלת משתמשים עם עמודות נוספות */
         String createTable = "CREATE TABLE " + TABLE_NAME + " (" +
                 COL_NAME + " TEXT PRIMARY KEY, " +
                 COL_EMAIL + " TEXT, " +
@@ -43,13 +43,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 "longest_win_streak INTEGER DEFAULT 0, " +
                 "total_cards_drawn INTEGER DEFAULT 0, " +
                 "largest_bet INTEGER DEFAULT 0)";
-                // Add this to the create table statement
-
         db.execSQL(createTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        /* שדרוג טבלה - הוספת עמודות בגרסאות חדשות */
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN music_volume INTEGER DEFAULT 100");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN sound_effects_volume INTEGER DEFAULT 100");
@@ -67,184 +66,96 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Insert, update, delete, and score methods remain unchanged...
+    /* === פונקציות ניהול משתמשים === */
 
-    // === SETTINGS METHODS ===
-
-    // Get music volume (0-100)
-    public int getMusicVolume(String email) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT music_volume FROM " + TABLE_NAME + " WHERE email = ?", new String[]{email});
-        int volume = 100;
-        if (cursor.moveToFirst()) {
-            volume = cursor.getInt(cursor.getColumnIndexOrThrow("music_volume"));
-        }
-        cursor.close();
-        return volume;
-    }
-    private void updateStat(String email, String column, int value) {
+    // הוספת משתמש חדש
+    public boolean insertUserdata(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(column, value);
-        db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
+        values.put(COL_NAME, user.getName());
+        values.put(COL_EMAIL, user.getEmail());
+        values.put(COL_PHONE_NUM, user.getPhone_num());
+        values.put(COL_PASSWORD, user.getPassword());
+        values.put("score", 100);  // ניקוד התחלתי
+
+        return db.insert(TABLE_NAME, null, values) != -1;
     }
 
-
-
-
-
-    public void setMusicVolume(String email, int volume) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("music_volume", volume);
-        db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
-    }
-
-    // Get sound effects volume (0-100)
-    public int getSoundEffectsVolume(String email) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT sound_effects_volume FROM " + TABLE_NAME + " WHERE email = ?", new String[]{email});
-        int volume = 100;
-        if (cursor.moveToFirst()) {
-            volume = cursor.getInt(cursor.getColumnIndexOrThrow("sound_effects_volume"));
-        }
-        cursor.close();
-        return volume;
-    }
-
-    public void setSoundEffectsVolume(String email, int volume) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("sound_effects_volume", volume);
-        db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
-    }
-
-    // Get notifications toggle (true/false)
-    public boolean getNotificationsEnabled(String email) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT notifications_enabled FROM " + TABLE_NAME + " WHERE email = ?", new String[]{email});
-        boolean enabled = true;
-        if (cursor.moveToFirst()) {
-            enabled = cursor.getInt(cursor.getColumnIndexOrThrow("notifications_enabled")) == 1;
-        }
-        cursor.close();
-        return enabled;
-    }
-
-    public void setNotificationsEnabled(String email, boolean enabled) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("notifications_enabled", enabled ? 1 : 0);
-        db.update(TABLE_NAME, values, COL_EMAIL + "=?", new String[]{email});
-    }
-
-public boolean insertUserdata(User user) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_NAME, user.getName());
-        contentValues.put(COL_PHONE_NUM, user.getPhone_num());
-        contentValues.put(COL_PASSWORD, user.getPassword());
-        contentValues.put(COL_EMAIL, user.getEmail());
-        contentValues.put("score", 100); // Initialize score
-
-        long result = db.insert(TABLE_NAME, null, contentValues);
-        return result != -1;
-    }
-
+    // עדכון פרטי משתמש
     public boolean updateUserdata(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_PHONE_NUM, user.getPhone_num());
-        contentValues.put(COL_PASSWORD, user.getPassword());
-        contentValues.put(COL_EMAIL, user.getEmail());
+        ContentValues values = new ContentValues();
+        values.put(COL_EMAIL, user.getEmail());
+        values.put(COL_PHONE_NUM, user.getPhone_num());
+        values.put(COL_PASSWORD, user.getPassword());
 
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_NAME + "=?", new String[]{user.getName()});
-        if (cursor.getCount() > 0) {
-            long result = db.update(TABLE_NAME, contentValues, COL_NAME + "=?", new String[]{user.getName()});
-            cursor.close();
-            return result != -1;
-        } else {
-            cursor.close();
-            return false;
+        boolean exists = cursor.getCount() > 0;
+        if (exists) {
+            db.update(TABLE_NAME, values, COL_NAME + "=?", new String[]{user.getName()});
         }
+        cursor.close();
+        return exists;
     }
 
+    // מחיקת משתמש
     public boolean deleteData(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_NAME + "=?", new String[]{user.getName()});
-        if (cursor.getCount() > 0) {
-            long result = db.delete(TABLE_NAME, COL_NAME + "=?", new String[]{user.getName()});
-            cursor.close();
-            return result != -1;
-        } else {
-            cursor.close();
-            return false;
+        boolean exists = cursor.getCount() > 0;
+        if (exists) {
+            db.delete(TABLE_NAME, COL_NAME + "=?", new String[]{user.getName()});
         }
+        cursor.close();
+        return exists;
     }
 
-    public Cursor getData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-    }
-
+    // שליפת כל המשתמשים
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-                String email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
-                String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone_num"));
-                String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
-
-                User user = new User(name, email, phone, password);
-                userList.add(user);
-            } while (cursor.moveToNext());
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME));
+            String email = cursor.getString(cursor.getColumnIndexOrThrow(COL_EMAIL));
+            String phone = cursor.getString(cursor.getColumnIndexOrThrow(COL_PHONE_NUM));
+            String password = cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD));
+            userList.add(new User(name, email, phone, password));
         }
         cursor.close();
         return userList;
     }
 
-    // New method: get user's score
-    public int getScore(String email) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT score FROM " + TABLE_NAME + " WHERE email = ?", new String[]{email});
-        int score = -1;
-        if (cursor.moveToFirst()) {
-            score = cursor.getInt(cursor.getColumnIndexOrThrow("score"));
-        }
-        cursor.close();
-        return score;
-    }
-
+    // שליפת משתמש לפי אימייל
     public User getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE email = ?", new String[]{email});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COL_EMAIL + "=?", new String[]{email});
         User user = null;
         if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
-            String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone_num"));
-            String password = cursor.getString(cursor.getColumnIndexOrThrow("password"));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME));
+            String phone = cursor.getString(cursor.getColumnIndexOrThrow(COL_PHONE_NUM));
+            String password = cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD));
             user = new User(name, email, phone, password);
         }
         cursor.close();
         return user;
     }
 
-
-    public void updateScore(String email, int newScore) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("score", newScore);
-        db.update(TABLE_NAME, contentValues, COL_EMAIL + "=?", new String[]{email});
+    // שליפת ניקוד המשתמש
+    public int getScore(String email) {
+        return getStatByUsername(email, "score");
     }
 
-    // General get stat
+    // עדכון ניקוד המשתמש
+    public void updateScore(String email, int newScore) {
+        updateStatByUsername(email, "score", newScore);
+    }
+
+    /* === פונקציות סטטיסטיקה כלליות (גישה לפי עמודה) === */
+
     private int getStatByUsername(String username, String column) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT " + column + " FROM " + TABLE_NAME + " WHERE email = ?", new String[]{username});
+        Cursor cursor = db.rawQuery("SELECT " + column + " FROM " + TABLE_NAME + " WHERE email=?", new String[]{username});
         int stat = 0;
         if (cursor.moveToFirst()) {
             stat = cursor.getInt(cursor.getColumnIndexOrThrow(column));
@@ -253,15 +164,14 @@ public boolean insertUserdata(User user) {
         return stat;
     }
 
-    // General update stat
     private void updateStatByUsername(String username, String column, int value) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(column, value);
-        db.update(TABLE_NAME, contentValues, "email=?", new String[]{username});
+        ContentValues values = new ContentValues();
+        values.put(column, value);
+        db.update(TABLE_NAME, values, "email=?", new String[]{username});
     }
 
-    // Public getters
+    /* === פונקציות סטטיסטיקה ייעודיות === */
     public int getGamesPlayed(String username) { return getStatByUsername(username, "games_played"); }
     public int getGamesWon(String username) { return getStatByUsername(username, "games_won"); }
     public int getGamesLost(String username) { return getStatByUsername(username, "games_lost"); }
@@ -271,7 +181,6 @@ public boolean insertUserdata(User user) {
     public int getTotalCardsDrawn(String username) { return getStatByUsername(username, "total_cards_drawn"); }
     public int getLargestBet(String username) { return getStatByUsername(username, "largest_bet"); }
 
-    // Public setters
     public void updateGamesPlayed(String username, int value) { updateStatByUsername(username, "games_played", value); }
     public void updateGamesWon(String username, int value) { updateStatByUsername(username, "games_won", value); }
     public void updateGamesLost(String username, int value) { updateStatByUsername(username, "games_lost", value); }
@@ -281,8 +190,19 @@ public boolean insertUserdata(User user) {
     public void updateTotalCardsDrawn(String username, int value) { updateStatByUsername(username, "total_cards_drawn", value); }
     public void updateLargestBet(String username, int value) { updateStatByUsername(username, "largest_bet", value); }
 
+    /* === פונקציות הגדרות (ווליום, נוטיפיקציות) === */
+    public int getMusicVolume(String email) { return getStatByUsername(email, "music_volume"); }
+    public void setMusicVolume(String email, int volume) { updateStatByUsername(email, "music_volume", volume); }
 
+    public int getSoundEffectsVolume(String email) { return getStatByUsername(email, "sound_effects_volume"); }
+    public void setSoundEffectsVolume(String email, int volume) { updateStatByUsername(email, "sound_effects_volume", volume); }
 
+    public boolean getNotificationsEnabled(String email) {
+        return getStatByUsername(email, "notifications_enabled") == 1;
+    }
+    public void setNotificationsEnabled(String email, boolean enabled) {
+        updateStatByUsername(email, "notifications_enabled", enabled ? 1 : 0);
+    }
 }
 
 

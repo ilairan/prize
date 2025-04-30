@@ -1,49 +1,49 @@
 package com.example.prize;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.IBinder;
-
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 public class MusicService extends Service {
 
-    private static MediaPlayer mediaPlayer;
-    private static final String CHANNEL_ID = "MusicServiceChannel";
+    private static MediaPlayer mediaPlayer;  /* נגן המוזיקה */
+    private static final String CHANNEL_ID = "MusicServiceChannel";  /* ערוץ נוטיפיקציות (לא בשימוש כרגע) */
 
     @Override
     public void onCreate() {
         super.onCreate();
+        /* אתחול הנגן אם הוא לא קיים */
         if (mediaPlayer == null) {
-            mediaPlayer = MediaPlayer.create(this, R.raw.background_music);
-            mediaPlayer.setLooping(true);
+            mediaPlayer = MediaPlayer.create(this, R.raw.background_music);  /* מוזיקה מהריסורסס */
+            mediaPlayer.setLooping(true);  /* חזרה בלופ */
         }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!mediaPlayer.isPlaying()) {
+        /* הפעלת המוזיקה אם היא לא פועלת */
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
             mediaPlayer.start();
         }
-        return START_STICKY;
+        return START_STICKY;  /* ממשיך לרוץ גם אם המערכת סוגרת את השירות */
     }
 
+    // שינוי ווליום המוזיקה (לשני הערוצים)
     public static void setMusicVolume(float volume) {
         if (mediaPlayer != null) {
-            mediaPlayer.setVolume(volume, volume);  // Apply volume to both channels
+            mediaPlayer.setVolume(volume, volume);
         }
     }
 
     @Override
     public void onDestroy() {
+        /* עצירה ושחרור הנגן כשמפסיקים את השירות */
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
             mediaPlayer.release();
             mediaPlayer = null;
         }
@@ -53,9 +53,8 @@ public class MusicService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return null;  /* השירות לא תומך ב-Binding */
     }
-
-
 }
+
 

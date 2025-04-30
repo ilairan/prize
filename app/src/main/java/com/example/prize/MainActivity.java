@@ -3,8 +3,6 @@ package com.example.prize;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,94 +12,77 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.util.Calendar;
-
 public class MainActivity extends AppCompatActivity {
 
-    TextView continue_button;
+    private TextView continue_button;  // כפתור המשך
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        // Start Music Service if not already running
+        // התחלת שירות המוזיקה אם הוא לא כבר רץ
         if (!isMyServiceRunning(MusicService.class)) {
-          Intent serviceIntent = new Intent(this, MusicService.class);
-           startService(serviceIntent);
-        }
- // Don't use startForegroundService here
-
-        // Request notification permission (Android 13+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
-            }
+            startService(new Intent(this, MusicService.class));  // התחלת השירות
         }
 
+        // בקשת הרשאה להודעות (באנדרואיד 13 ומעלה)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+        }
+
+        // אתחול SharedPreferences ו-DBHelper
         SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        String username = sharedPreferences.getString("username", null);
+        String username = sharedPreferences.getString("username", null);  // שליפת שם המשתמש
         DBHelper dbHelper = new DBHelper(this);
 
-
-
-        // Continue button logic
+        // טיפול בלחיצה על כפתור "המשך"
         continue_button = findViewById(R.id.continue_button);
         continue_button.setOnClickListener(v -> {
-            if (username != null) {
-                // Auto-login to Main_menu
+            if (username != null) {  // אם המשתמש מחובר
+                // טעינת העדפות ווליום של המשתמש מהמאגרים
                 int musicVolume = dbHelper.getMusicVolume(username);
                 int sfxVolume = dbHelper.getSoundEffectsVolume(username);
-                MusicService.setMusicVolume(musicVolume / 100f);
-                Intent intent = new Intent(MainActivity.this, Main_menu.class);
-                startActivity(intent);
-                finish();
 
+                // הגדרת עוצמת המוזיקה בשירות
+                MusicService.setMusicVolume(musicVolume / 100f);  // המרה לאחוזים (0.0-1.0)
 
+                // מעבר למסך הראשי (Main_menu)
+                startActivity(new Intent(MainActivity.this, Main_menu.class));
+                finish();  // סגירת ה-Activity הנוכחי
             } else {
-                // Go to Login_activity
-                Intent intent = new Intent(MainActivity.this, Login_activity.class);
-                startActivity(intent);
+                // אם המשתמש לא מחובר, מעבר למסך התחברות (Login_activity)
+                startActivity(new Intent(MainActivity.this, Login_activity.class));
             }
         });
     }
 
-    // Start MusicService (if not running)
+    // בדיקה אם שירות רץ ברקע
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (manager != null) {
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;  // השירות רץ
+                }
+            }
+        }
+        return false;  // השירות לא רץ
+    }
 
-
-    // Schedule a daily notification at the given time
-
-    // Handle notification permission result
+    // טיפול בתוצאה של בקשת ההרשאות
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-            } else {
-                // Permission denied (optional: show a toast)
-            }
+        if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // ההרשאה ניתנה (אין צורך בפעולה נוספת כרגע)
+        } else {
+            // ההרשאה נדחתה (אפשר להוסיף הודעה למשתמש אם רוצים)
         }
     }
-
-
-
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-
-
-
 }
+
 
 
 

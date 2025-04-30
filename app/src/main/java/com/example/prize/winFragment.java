@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +15,7 @@ import android.widget.TextView;
 
 public class winFragment extends Fragment {
 
-    TextView playAgainButton;
-    TextView mainmenu;
-    TextView scoreTextView;
-
+    private TextView playAgainButton, mainmenu, scoreTextView;
     private String username;
     private int updatedScore;
     private DBHelper dbHelper;
@@ -29,61 +25,62 @@ public class winFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_win, container, false);
 
+        // הצגת הפרגמנט במסך מלא (ללא סטטוס בר)
         requireActivity().getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         );
 
+        // קישור רכיבי ה-XML
         playAgainButton = view.findViewById(R.id.playAgainButton);
         mainmenu = view.findViewById(R.id.MainMenuButton);
         scoreTextView = view.findViewById(R.id.scoreTextView);
 
-        // Get username from SharedPreferences
+        // שליפת שם המשתמש מ-SharedPreferences
         SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         username = sharedPref.getString("username", "defaultUser");
 
+        dbHelper = new DBHelper(requireContext());  // אתחול DBHelper
+        updatedScore = dbHelper.getScore(username);  // שליפת ניקוד עדכני מהמסד
 
-        // Get updated score from DB
-        dbHelper = new DBHelper(requireContext());
-        updatedScore = dbHelper.getScore(username);
+        scoreTextView.setText(String.valueOf(updatedScore));  // הצגת הניקוד
 
-        // Show the score
-        scoreTextView.setText("" + updatedScore);
-
+        // כפתור "שחק שוב" → מעבר לפרגמנט בחירת הימור (BetAmount)
         playAgainButton.setOnClickListener(v -> {
             BetAmount betAmountFragment = new BetAmount();
-            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.frameLayout, betAmountFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.frameLayout, betAmountFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
-        // Main Menu button → Back to Main_menu Activity
+        // כפתור "תפריט ראשי" → מעבר ל-Activity הראשי
         mainmenu.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), Main_menu.class);
-            startActivity(intent);
+            startActivity(new Intent(getActivity(), Main_menu.class));
         });
-        username = sharedPref.getString("username", "defaultUser");
+
+        // עדכון סטטיסטיקות במידה והמשתמש מחובר
         if (!username.equals("defaultUser")) {
-            // Games played
-            int gamesPlayed = dbHelper.getGamesPlayed(username);
-            dbHelper.updateGamesPlayed(username, gamesPlayed + 1);
-
-            // Games won
-            int gamesWon = dbHelper.getGamesWon(username);
-            dbHelper.updateGamesWon(username, gamesWon + 1);
-
-            // Current win streak
-            int currentWinStreak = dbHelper.getCurrentWinStreak(username);
-            dbHelper.updateCurrentWinStreak(username, currentWinStreak + 1);
-
-            // Longest win streak
-            int longestWinStreak = dbHelper.getLongestWinStreak(username);
-            if (currentWinStreak + 1 > longestWinStreak) {
-                dbHelper.updateLongestWinStreak(username, currentWinStreak + 1);
-            }
+            updateStatistics();
         }
+
         return view;
+    }
+
+    // פונקציה לעדכון הסטטיסטיקות במסד
+    private void updateStatistics() {
+        int gamesPlayed = dbHelper.getGamesPlayed(username);
+        dbHelper.updateGamesPlayed(username, gamesPlayed + 1);
+
+        int gamesWon = dbHelper.getGamesWon(username);
+        dbHelper.updateGamesWon(username, gamesWon + 1);
+
+        int currentWinStreak = dbHelper.getCurrentWinStreak(username);
+        dbHelper.updateCurrentWinStreak(username, currentWinStreak + 1);
+
+        int longestWinStreak = dbHelper.getLongestWinStreak(username);
+        if (currentWinStreak + 1 > longestWinStreak) {
+            dbHelper.updateLongestWinStreak(username, currentWinStreak + 1);
+        }
     }
 }
 

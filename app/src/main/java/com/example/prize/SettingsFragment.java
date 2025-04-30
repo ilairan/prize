@@ -18,28 +18,27 @@ import android.widget.TextView;
 
 public class SettingsFragment extends Fragment {
 
-    private SeekBar musicVolumeSeekBar, sfxVolumeSeekBar;
-    private Switch notificationsSwitch;
-    private TextView changeDetailsButton, logoutButton, backButton;
-    private DBHelper dbHelper;
-    private String userEmail;
-    private SoundEffectsManager soundEffectsManager;
-
+    private SeekBar musicVolumeSeekBar, sfxVolumeSeekBar;  /* פסי ווליום */
+    private Switch notificationsSwitch;  /* כפתור הדלקה/כיבוי להודעות */
+    private TextView changeDetailsButton, logoutButton, backButton;  /* כפתורי פעולה */
+    private DBHelper dbHelper;  /* גישה למסד הנתונים */
+    private String userEmail;  /* המייל של המשתמש */
+    private SoundEffectsManager soundEffectsManager;  /* מנהל אפקטים קוליים */
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
-
+        return inflater.inflate(R.layout.fragment_settings, container, false);  /* טעינת התצוגה */
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dbHelper = new DBHelper(getContext());
+        dbHelper = new DBHelper(getContext());  /* אתחול DBHelper */
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        userEmail = sharedPreferences.getString("username", null);  // Using email as 'username'
+        userEmail = sharedPreferences.getString("username", null);  /* שליפת המייל של המשתמש */
 
+        // קישור רכיבי ה-XML
         musicVolumeSeekBar = view.findViewById(R.id.musicVolumeSeekBar);
         sfxVolumeSeekBar = view.findViewById(R.id.sfxVolumeSeekBar);
         notificationsSwitch = view.findViewById(R.id.notificationsSwitch);
@@ -47,8 +46,9 @@ public class SettingsFragment extends Fragment {
         logoutButton = view.findViewById(R.id.logoutButton);
         backButton = view.findViewById(R.id.Back_buttom);
 
-        changeDetailsButton.setOnClickListener(v -> showChangeDetailsDialog());
-        // === Load settings ===
+        changeDetailsButton.setOnClickListener(v -> showChangeDetailsDialog());  /* כפתור שינוי פרטי משתמש */
+
+        // טעינת ההגדרות מהמסד
         if (userEmail != null) {
             int musicVolume = dbHelper.getMusicVolume(userEmail);
             int sfxVolume = dbHelper.getSoundEffectsVolume(userEmail);
@@ -58,90 +58,60 @@ public class SettingsFragment extends Fragment {
             sfxVolumeSeekBar.setProgress(sfxVolume);
             notificationsSwitch.setChecked(notificationsEnabled);
 
-            // Apply music volume immediately when fragment opens
-            MusicService.setMusicVolume(musicVolume / 100f);  // Convert to 0.0f - 1.0f
+            MusicService.setMusicVolume(musicVolume / 100f);  /* הפעלת עוצמת מוזיקה */
 
-            soundEffectsManager = new SoundEffectsManager(getContext());  // Initialize
+            soundEffectsManager = new SoundEffectsManager(getContext());  /* אתחול אפקטים קוליים */
 
-// Update this part:
+            // שינוי עוצמת אפקטים קוליים בלייב
             sfxVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (userEmail != null) {
-                        dbHelper.setSoundEffectsVolume(userEmail, progress);
-                        soundEffectsManager.setSfxVolume(progress);  // Update live
-                    }
+                    dbHelper.setSoundEffectsVolume(userEmail, progress);  /* עדכון במסד */
+                    soundEffectsManager.setSfxVolume(progress);  /* עדכון אפקטים בלייב */
                 }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {}
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
             });
-
         }
 
-        // === Listeners ===
+        // שינוי עוצמת מוזיקה בלייב
         musicVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (userEmail != null) dbHelper.setMusicVolume(userEmail, progress);
-                // Apply volume immediately to the music service
-                MusicService.setMusicVolume(progress / 100f);  // Convert to 0.0f - 1.0f
+                dbHelper.setMusicVolume(userEmail, progress);  /* עדכון במסד */
+                MusicService.setMusicVolume(progress / 100f);  /* עדכון בלייב */
             }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        sfxVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (userEmail != null) dbHelper.setSoundEffectsVolume(userEmail, progress);
-                // Apply sound effect volume globally (if needed)
-                // You can call a similar static method for SFX here if you have one
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
+        // שינוי מצב ההודעות
         notificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (userEmail != null) dbHelper.setNotificationsEnabled(userEmail, isChecked);
+            dbHelper.setNotificationsEnabled(userEmail, isChecked);
         });
 
+        // התנתקות מהמערכת
         logoutButton.setOnClickListener(v -> {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove("username");  // Clear auto-login
-            editor.apply();
-            startActivity(new Intent(getActivity(), Login_activity.class));
-            requireActivity().finish();  // Close current activity
+            sharedPreferences.edit().remove("username").apply();  /* מחיקת המייל מהעדפות */
+            startActivity(new Intent(getActivity(), Login_activity.class));  /* מעבר למסך התחברות */
+            requireActivity().finish();  /* סגירת ה-Activity הנוכחי */
         });
 
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), Main_menu.class);
-            startActivity(intent);
-        });
+        // חזרה לתפריט הראשי
+        backButton.setOnClickListener(v -> startActivity(new Intent(getActivity(), Main_menu.class)));
     }
 
+    // תיבת דיאלוג לשינוי פרטי משתמש
     private void showChangeDetailsDialog() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View dialogView = inflater.inflate(R.layout.dialog_change_details, null);
-
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_change_details, null);
         EditText editName = dialogView.findViewById(R.id.editName);
         EditText editEmail = dialogView.findViewById(R.id.editEmail);
         EditText editPhone = dialogView.findViewById(R.id.editPhone);
         EditText editPassword = dialogView.findViewById(R.id.editPassword);
 
-        // Pre-fill user data from the database
-        User user = dbHelper.getUserByEmail(userEmail);
+        User user = dbHelper.getUserByEmail(userEmail);  /* שליפת פרטי המשתמש */
         if (user != null) {
             editName.setText(user.getName());
             editEmail.setText(user.getEmail());
@@ -158,27 +128,20 @@ public class SettingsFragment extends Fragment {
                     String phone = editPhone.getText().toString();
                     String password = editPassword.getText().toString();
 
-                    // Update database
-                    User updatedUser = new User(name, email, phone, password);
-                    dbHelper.updateUserdata(updatedUser);
+                    dbHelper.updateUserdata(new User(name, email, phone, password));  /* עדכון במסד */
 
-                    // Update shared preferences if email changed
                     SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putString("username", email).apply();
-
-                    userEmail = email;  // Update locally in fragment too
+                    sharedPreferences.edit().putString("username", email).apply();  /* עדכון העדפות */
+                    userEmail = email;  /* עדכון מייל מקומי בפרגמנט */
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (soundEffectsManager != null) {
-            soundEffectsManager.release();
-        }
+        if (soundEffectsManager != null) soundEffectsManager.release();  /* שחרור אפקטים קוליים */
     }
-
 }
+

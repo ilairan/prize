@@ -21,24 +21,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class FirstFragment extends Fragment {
 
+    // משתנים למשחק ולממשק
     private Deck deck;
-    private List<Card> dealerHand;
-    private List<Card> playerHand;
-    private TextView dealerScoreTextView;
-    private TextView playerScoreTextView;
-    private TextView statusMessageTextView;
-    private Button hitButton;
-    private Button standButton;
+    private List<Card> dealerHand, playerHand;
+    private TextView dealerScoreTextView, playerScoreTextView, statusMessageTextView;
+    private Button hitButton, standButton;
     private ImageView deckView;
 
-    private RecyclerView dealerRecyclerView;
-    private RecyclerView playerRecyclerView;
-    private CardAdapter dealerAdapter;
-    private CardAdapter playerAdapter;
+    // RecyclerViews ותצוגות קלפים
+    private RecyclerView dealerRecyclerView, playerRecyclerView;
+    private CardAdapter dealerAdapter, playerAdapter;
+
     private SoundEffectsManager soundEffectsManager;
 
     private String username;
@@ -51,8 +47,25 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
-        soundEffectsManager = new SoundEffectsManager(requireContext());
-        // Initialize views
+
+        soundEffectsManager = new SoundEffectsManager(requireContext());  // אתחול אפקטים
+        dbHelper = new DBHelper(requireContext());  // אתחול DBHelper
+
+        // שליפת שם המשתמש מ-SharedPreferences
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        username = sharedPref.getString("username", "defaultUser");
+
+        // שליפת סכום ההימור מה-Bundle
+        if (getArguments() != null) {
+            betAmount = getArguments().getInt("betAmount", 10);
+            Log.d("FirstFragment", "Received BetAmount from Bundle: " + betAmount);
+        }
+
+        // שליפת ניקוד המשתמש מהמסד
+        playerScoreInDb = dbHelper.getScore(username);
+        Log.d("FirstFragment", "Username: " + username + ", Score: " + playerScoreInDb);
+
+        // קישור רכיבי UI
         dealerScoreTextView = view.findViewById(R.id.dealerScore);
         playerScoreTextView = view.findViewById(R.id.playerScore);
         statusMessageTextView = view.findViewById(R.id.statusMessage);
@@ -62,44 +75,23 @@ public class FirstFragment extends Fragment {
         dealerRecyclerView = view.findViewById(R.id.dealerRecyclerView);
         playerRecyclerView = view.findViewById(R.id.playerRecyclerView);
 
-        dbHelper = new DBHelper(requireContext());
-        SharedPreferences sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        username = sharedPref.getString("username", "defaultUser");
-        // Initialize deck and hands
+        // אתחול חפיסה וידיים
         deck = new Deck();
         dealerHand = new ArrayList<>();
         playerHand = new ArrayList<>();
 
-        // Get betAmount from Bundle
-        if (getArguments() != null) {
-            betAmount = getArguments().getInt("betAmount", 10);
-            Log.d("FirstFragment", "Received BetAmount from Bundle: " + betAmount);
-        }
-
-        // Get username from SharedPreferences
-       // SharedPreferences sharedPref1 = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        username = sharedPref.getString("username", "defaultUser");
-
-        // Initialize DBHelper and get score
-        dbHelper = new DBHelper(requireContext());
-        playerScoreInDb = dbHelper.getScore(username);
-
-        Log.d("FirstFragment", "Username: " + username + ", Score: " + playerScoreInDb);
-
-        // Setup RecyclerViews
+        // הגדרת RecyclerViews
         dealerAdapter = new CardAdapter(dealerHand);
         playerAdapter = new CardAdapter(playerHand);
-
         dealerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         dealerRecyclerView.setAdapter(dealerAdapter);
-
         playerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         playerRecyclerView.setAdapter(playerAdapter);
 
-        // Start game
+        // התחלת המשחק
         startGame();
 
-        // Button listeners
+        // לחצנים
         hitButton.setOnClickListener(v -> playerHit());
         standButton.setOnClickListener(v -> playerStand());
 
@@ -107,61 +99,45 @@ public class FirstFragment extends Fragment {
     }
 
     private void startGame() {
-        int Cardsdrawn = dbHelper.getTotalCardsDrawn(username);
-        dbHelper.updateTotalCardsDrawn(username, Cardsdrawn + 2);
+        // עדכון קלפים שנמשכו
+        int cardsDrawn = dbHelper.getTotalCardsDrawn(username);
+        dbHelper.updateTotalCardsDrawn(username, cardsDrawn + 2);
+
         dealerHand.clear();
         playerHand.clear();
         deck.shuffle();
-        hitButton.setEnabled(false);  // Disable buttons during dealing
+
+        hitButton.setEnabled(false);
         standButton.setEnabled(false);
         statusMessageTextView.setText("Dealing cards...");
 
         Handler handler = new Handler();
 
-        // Player first card
+        // חלוקת קלפים עם השהיה לכל שלב
         handler.postDelayed(() -> {
-            playerHand.add(deck.drawCard());
-            playerAdapter.notifyItemInserted(playerHand.size() - 1);
-            animateLastCard(playerRecyclerView, playerHand.size() - 1);
-            soundEffectsManager.playCardDraw();  // Play sound here
+            drawCard(playerHand, playerAdapter, playerRecyclerView);
             updateScores();
         }, 500);
 
-        // Dealer card
         handler.postDelayed(() -> {
-            dealerHand.add(deck.drawCard());
-            dealerAdapter.notifyItemInserted(dealerHand.size() - 1);
-            animateLastCard(dealerRecyclerView, dealerHand.size() - 1);
-            soundEffectsManager.playCardDraw();  // Play sound here
+            drawCard(dealerHand, dealerAdapter, dealerRecyclerView);
             updateScores();
         }, 1000);
 
-        // Player second card
         handler.postDelayed(() -> {
-            playerHand.add(deck.drawCard());
-            playerAdapter.notifyItemInserted(playerHand.size() - 1);
-            animateLastCard(playerRecyclerView, playerHand.size() - 1);
-            soundEffectsManager.playCardDraw();  // Play sound here
+            drawCard(playerHand, playerAdapter, playerRecyclerView);
             updateScores();
-
-            // Enable buttons after all cards are dealt
             hitButton.setEnabled(true);
             standButton.setEnabled(true);
             statusMessageTextView.setText("Your turn!");
         }, 1500);
     }
 
-
-
     private void playerHit() {
-        int Cardsdrawn = dbHelper.getTotalCardsDrawn(username);
-        dbHelper.updateTotalCardsDrawn(username, Cardsdrawn + 1);
-        soundEffectsManager.playCardDraw();  // Play sound here
-        playerHand.add(deck.drawCard());
-        playerAdapter.notifyItemInserted(playerHand.size() - 1);
-        animateLastCard(playerRecyclerView, playerHand.size() - 1);
+        int cardsDrawn = dbHelper.getTotalCardsDrawn(username);
+        dbHelper.updateTotalCardsDrawn(username, cardsDrawn + 1);
 
-        // Update scores after hit
+        drawCard(playerHand, playerAdapter, playerRecyclerView);
         updateScores();
 
         if (calculateScore(playerHand) > 21) {
@@ -172,10 +148,8 @@ public class FirstFragment extends Fragment {
         }
     }
 
-
     private void playerStand() {
-        hitButton.setEnabled(false);
-        standButton.setEnabled(false);
+        disableButtons();
         statusMessageTextView.setText("Dealer's turn...");
         dealerTurn();
     }
@@ -184,17 +158,10 @@ public class FirstFragment extends Fragment {
         int dealerScore = calculateScore(dealerHand);
 
         if (dealerScore < 17) {
-            // Dealer draws a card
-            dealerHand.add(deck.drawCard());
-            soundEffectsManager.playCardDraw();  // Play sound here
-            dealerAdapter.notifyItemInserted(dealerHand.size() - 1);
-            animateLastCard(dealerRecyclerView, dealerHand.size() - 1);
+            drawCard(dealerHand, dealerAdapter, dealerRecyclerView);
             updateScores();
-
-            // Delay next card
-            new Handler().postDelayed(this::dealerTurn, 1000);  // 1-second delay for next card
+            new Handler().postDelayed(this::dealerTurn, 1000);
         } else {
-            // Dealer is done drawing
             evaluateWinner();
         }
     }
@@ -217,20 +184,30 @@ public class FirstFragment extends Fragment {
         }
     }
 
-
-
     private int calculateScore(List<Card> hand) {
         int score = 0;
         int aceCount = 0;
+
         for (Card card : hand) {
             score += card.getValue();
             if (card.getRank().equals("Ace")) aceCount++;
         }
+
+        // התאמת ערך האסים אם עובר 21
         while (score > 21 && aceCount > 0) {
             score -= 10;
             aceCount--;
         }
+
         return score;
+    }
+
+    private void drawCard(List<Card> hand, CardAdapter adapter, RecyclerView recyclerView) {
+        Card card = deck.drawCard();
+        hand.add(card);
+        adapter.notifyItemInserted(hand.size() - 1);
+        animateLastCard(recyclerView, hand.size() - 1);
+        soundEffectsManager.playCardDraw();
     }
 
     private void disableButtons() {
@@ -257,9 +234,7 @@ public class FirstFragment extends Fragment {
     private void animateLastCard(RecyclerView recyclerView, int position) {
         recyclerView.post(() -> {
             RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-            if (holder != null && holder.itemView != null) {
-                animateCardDraw(holder.itemView);
-            }
+            if (holder != null) animateCardDraw(holder.itemView);
         });
     }
 
@@ -267,9 +242,9 @@ public class FirstFragment extends Fragment {
         if (deckView == null || cardView == null) return;
 
         int[] deckPos = new int[2];
-        deckView.getLocationOnScreen(deckPos);
-
         int[] cardPos = new int[2];
+
+        deckView.getLocationOnScreen(deckPos);
         cardView.getLocationOnScreen(cardPos);
 
         float deltaX = deckPos[0] - cardPos[0];
@@ -293,14 +268,10 @@ public class FirstFragment extends Fragment {
                 .start();
     }
 
-
     private void updateScores() {
-        int dealerScore = calculateScore(dealerHand);
-        int playerScore = calculateScore(playerHand);
-        dealerScoreTextView.setText("Dealer: " + dealerScore);
-        playerScoreTextView.setText("Player: " + playerScore);
+        dealerScoreTextView.setText("Dealer: " + calculateScore(dealerHand));
+        playerScoreTextView.setText("Player: " + calculateScore(playerHand));
     }
-
 }
 
 

@@ -3,7 +3,6 @@ package com.example.prize;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -12,30 +11,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 public class Register_activity extends AppCompatActivity {
 
-    private CountDownTimer timer;
-    TextView timer_view;
-    EditText full_name;
-    EditText email;
-    EditText phone_num;
-    EditText password;
-    EditText repeat_password;
-    TextView advance_button;
-    TextView register_button;
-    TextView back_register;
-    DBHelper DB;
-    SQLiteDatabase db;
-    boolean trust = true;
+    private EditText full_name, email, phone_num, password, repeat_password;
+    private TextView advance_button, register_button, back_register;
+    private DBHelper DB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Find ids
+        // קישור רכיבי ה-XML
         full_name = findViewById(R.id.fullname_register);
         email = findViewById(R.id.email_register);
         phone_num = findViewById(R.id.phone_register);
@@ -45,29 +32,23 @@ public class Register_activity extends AppCompatActivity {
         back_register = findViewById(R.id.back_register);
         advance_button = findViewById(R.id.advance_buttom);
 
-        DB = new DBHelper(this);
+        DB = new DBHelper(this);  // אתחול DBHelper
 
-        // Temporary button
-        advance_button.setOnClickListener(v -> {
-            Intent intent = new Intent(Register_activity.this, Activity_listview.class);
-            startActivity(intent);
-        });
+        // מעבר למסך זמני (לרשימת משתמשים לדוגמה)
 
-        // Registration button
+
+        // לחיצה על כפתור הרשמה
         register_button.setOnClickListener(v -> registerUser());
 
-        // Back button
-        back_register.setOnClickListener(v -> {
-            Intent intent = new Intent(Register_activity.this, Login_activity.class);
-            startActivity(intent);
-        });
-
-
+        // לחיצה על כפתור חזרה
+        back_register.setOnClickListener(v -> startActivity(new Intent(this, Login_activity.class)));
     }
 
+    // פונקציה לרישום משתמש
     private void registerUser() {
-        trust = true;
+        boolean trust = true;  // משתנה לבדיקה אם כל השדות תקינים
 
+        // === בדיקות תקינות שדות ===
         if (TextUtils.isEmpty(full_name.getText().toString())) {
             full_name.setError("You must fill your name");
             trust = false;
@@ -111,6 +92,7 @@ public class Register_activity extends AppCompatActivity {
             trust = false;
         }
 
+        // === אם הכל תקין, רישום המשתמש למסד ===
         if (trust) {
             User user = new User(
                     full_name.getText().toString(),
@@ -120,16 +102,12 @@ public class Register_activity extends AppCompatActivity {
             );
 
             boolean checkInsertData = DB.insertUserdata(user);
-            Intent intent = new Intent(Register_activity.this, Login_activity.class);
             if (checkInsertData) {
-                Toast.makeText(Register_activity.this, "Successfully Registered", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
+                Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, Login_activity.class));  // מעבר להתחברות
             } else {
-                Toast.makeText(Register_activity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show();
             }
-            startActivity(intent);
         }
     }
-
 }
-

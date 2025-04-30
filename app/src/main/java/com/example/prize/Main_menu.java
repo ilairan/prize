@@ -1,6 +1,6 @@
 package com.example.prize;
 
-import android.content.SharedPreferences;  // נוסיף ספרייה ל-SharedPreferences
+import android.content.SharedPreferences;  /* ייבוא SharedPreferences */
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -10,26 +10,22 @@ import androidx.fragment.app.Fragment;
 
 public class Main_menu extends AppCompatActivity {
 
-    FrameLayout frameLayout;
-    TextView settingsbutton;
-    TextView startbutton;
-    TextView button3;
-    TextView textView;
-    TextView scoreTextView;
-    TextView medals;
-    DBHelper dbHelper;
+    // משתני ממשק
+    private FrameLayout frameLayout;
+    private TextView settingsbutton, startbutton, button3, textView, scoreTextView, medals;
 
-    // משתנים ל-SharedPreferences
-    SharedPreferences sharedPreferences;
-    private static final String PREF_NAME = "user_prefs";
-    private static final String KEY_USERNAME = "username";
+    private DBHelper dbHelper;  // גישה למסד הנתונים
+    private SharedPreferences sharedPreferences;  // גישה להעדפות משתמש
+
+    private static final String PREF_NAME = "user_prefs";  // שם קובץ ההעדפות
+    private static final String KEY_USERNAME = "username";  // מפתח שם המשתמש
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        // קבלת רכיבי ה-XML
+        // קישור רכיבי ה-XML
         frameLayout = findViewById(R.id.frameLayout);
         settingsbutton = findViewById(R.id.Settingsbutton);
         startbutton = findViewById(R.id.startbutton);
@@ -38,71 +34,56 @@ public class Main_menu extends AppCompatActivity {
         scoreTextView = findViewById(R.id.scoreTextView);
         medals = findViewById(R.id.Medals);
 
-        // אתחול מסד נתונים
-        dbHelper = new DBHelper(this);
+        dbHelper = new DBHelper(this);  // אתחול DBHelper
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);  // אתחול SharedPreferences
 
-        // אתחול SharedPreferences
-        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        String username = sharedPreferences.getString(KEY_USERNAME, null);  // שליפת שם המשתמש
 
-        // קבלת המשתמש המחובר (המייל)
-        String username = sharedPreferences.getString(KEY_USERNAME, null);
-
-        // בדיקה אם יש משתמש מחובר
+        // הצגת ניקוד אם יש משתמש מחובר
         if (username != null) {
-            int score = dbHelper.getScore(username);  // קבלת הניקוד מהמסד
-            scoreTextView.setText("" + score);  // הצגת הניקוד במסך הראשי
+            int score = dbHelper.getScore(username);  // שליפת הניקוד
+            scoreTextView.setText(String.valueOf(score));  // הצגת הניקוד
         } else {
             scoreTextView.setText("Score: N/A");  // אין משתמש מחובר
         }
 
-        // כפתור הגדרות
-        settingsbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new SettingsFragment());
-                toggleVisibility(false);  // הסתרת התפריט הראשי
-            }
+        // לחיצה על כפתור הגדרות
+        settingsbutton.setOnClickListener(v -> {
+            loadFragment(new SettingsFragment());  // טעינת פרגמנט הגדרות
+            toggleVisibility(false);  // הסתרת תפריט ראשי
         });
 
-        medals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new AchievementsFragment());
-                toggleVisibility(false);  // הסתרת התפריט הראשי
-            }
+        // לחיצה על כפתור מדליות (הישגים)
+        medals.setOnClickListener(v -> {
+            loadFragment(new AchievementsFragment());  // טעינת פרגמנט הישגים
+            toggleVisibility(false);  // הסתרת תפריט ראשי
         });
 
-        // כפתור התחל משחק
-        startbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BetAmount betAmount = new BetAmount();
-                Bundle args = new Bundle();
+        // לחיצה על כפתור התחל משחק
+        startbutton.setOnClickListener(v -> {
+            String user = sharedPreferences.getString(KEY_USERNAME, null);  // שליפת שם המשתמש
 
-                // בדיקה שוב למקרה שהמשתמש קיים
-                String username = sharedPreferences.getString(KEY_USERNAME, null);
-                if (username != null) {
-                    args.putString("username", username);  // שליחת שם המשתמש
-                    args.putInt("score", dbHelper.getScore(username));  // שליחת הניקוד
-                }
+            BetAmount betAmount = new BetAmount();
+            Bundle args = new Bundle();
 
+            if (user != null) {  // בדיקה אם המשתמש מחובר
+                args.putString("username", user);  // שליחת שם המשתמש
+                args.putInt("score", dbHelper.getScore(user));  // שליחת ניקוד
                 betAmount.setArguments(args);
-                loadFragment(betAmount);
-                toggleVisibility(false);  // הסתרת התפריט הראשי
             }
+
+            loadFragment(betAmount);  // טעינת פרגמנט בחירת הימור
+            toggleVisibility(false);  // הסתרת תפריט ראשי
         });
 
-        // כפתור נוסף (סתם דוגמה)
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadFragment(new StatisticsFragment());
-                toggleVisibility(false);  // הסתרת התפריט הראשי
-            }
+        // לחיצה על כפתור סטטיסטיקות
+        button3.setOnClickListener(v -> {
+            loadFragment(new StatisticsFragment());  // טעינת פרגמנט סטטיסטיקות
+            toggleVisibility(false);  // הסתרת תפריט ראשי
         });
     }
 
-    // טעינת פרגמנט למסך
+    // פונקציה לטעינת פרגמנט
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -111,14 +92,17 @@ public class Main_menu extends AppCompatActivity {
                 .commit();
     }
 
-    // פונקציה לשינוי הנראות של המסכים
+    // פונקציה לשינוי הנראות של האלמנטים במסך
     private void toggleVisibility(boolean showMainMenu) {
-        frameLayout.setVisibility(showMainMenu ? View.GONE : View.VISIBLE);
-        settingsbutton.setVisibility(showMainMenu ? View.VISIBLE : View.GONE);
-        startbutton.setVisibility(showMainMenu ? View.VISIBLE : View.GONE);
-        button3.setVisibility(showMainMenu ? View.VISIBLE : View.GONE);
-        textView.setVisibility(showMainMenu ? View.VISIBLE : View.GONE);
-        scoreTextView.setVisibility(showMainMenu ? View.VISIBLE : View.GONE);  // ADD THIS!
+        int mainMenuVisibility = showMainMenu ? View.VISIBLE : View.GONE;
+        int frameVisibility = showMainMenu ? View.GONE : View.VISIBLE;
+
+        frameLayout.setVisibility(frameVisibility);
+        settingsbutton.setVisibility(mainMenuVisibility);
+        startbutton.setVisibility(mainMenuVisibility);
+        button3.setVisibility(mainMenuVisibility);
+        textView.setVisibility(mainMenuVisibility);
+        scoreTextView.setVisibility(mainMenuVisibility);
     }
 }
 
