@@ -53,12 +53,10 @@ public class Register_activity extends AppCompatActivity {
             full_name.setError("You must fill your name");
             trust = false;
         }
-
         if (TextUtils.isEmpty(repeat_password.getText().toString())) {
             repeat_password.setError("You must repeat the password");
             trust = false;
         }
-
         if (TextUtils.isEmpty(phone_num.getText().toString())) {
             phone_num.setError("You must fill your phone number");
             trust = false;
@@ -66,7 +64,6 @@ public class Register_activity extends AppCompatActivity {
             phone_num.setError("Invalid phone number");
             trust = false;
         }
-
         if (TextUtils.isEmpty(password.getText().toString())) {
             password.setError("You must fill the password");
             trust = false;

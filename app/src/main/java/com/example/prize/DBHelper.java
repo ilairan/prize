@@ -111,20 +111,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // שליפת כל המשתמשים
-    public List<User> getAllUsers() {
-        List<User> userList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
-        while (cursor.moveToNext()) {
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME));
-            String email = cursor.getString(cursor.getColumnIndexOrThrow(COL_EMAIL));
-            String phone = cursor.getString(cursor.getColumnIndexOrThrow(COL_PHONE_NUM));
-            String password = cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD));
-            userList.add(new User(name, email, phone, password));
-        }
-        cursor.close();
-        return userList;
-    }
+
 
     // שליפת משתמש לפי אימייל
     public User getUserByEmail(String email) {

@@ -83,9 +83,9 @@ public class FirstFragment extends Fragment {
         // הגדרת RecyclerViews
         dealerAdapter = new CardAdapter(dealerHand);
         playerAdapter = new CardAdapter(playerHand);
-        dealerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        dealerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         dealerRecyclerView.setAdapter(dealerAdapter);
-        playerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        playerRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         playerRecyclerView.setAdapter(playerAdapter);
 
         // התחלת המשחק

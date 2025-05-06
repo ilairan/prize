@@ -133,9 +133,8 @@ public class SettingsFragment extends Fragment {
                     SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
                     sharedPreferences.edit().putString("username", email).apply();  /* עדכון העדפות */
                     userEmail = email;  /* עדכון מייל מקומי בפרגמנט */
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+                });
+
     }
 
     @Override

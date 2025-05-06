@@ -1,5 +1,6 @@
 package com.example.prize;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;  /* ייבוא SharedPreferences */
 import android.os.Bundle;
 import android.view.View;
@@ -61,17 +62,9 @@ public class Main_menu extends AppCompatActivity {
 
         // לחיצה על כפתור התחל משחק
         startbutton.setOnClickListener(v -> {
+            showInstructionsDialog();
             String user = sharedPreferences.getString(KEY_USERNAME, null);  // שליפת שם המשתמש
-
             BetAmount betAmount = new BetAmount();
-            Bundle args = new Bundle();
-
-            if (user != null) {  // בדיקה אם המשתמש מחובר
-                args.putString("username", user);  // שליחת שם המשתמש
-                args.putInt("score", dbHelper.getScore(user));  // שליחת ניקוד
-                betAmount.setArguments(args);
-            }
-
             loadFragment(betAmount);  // טעינת פרגמנט בחירת הימור
             toggleVisibility(false);  // הסתרת תפריט ראשי
         });
@@ -104,5 +97,36 @@ public class Main_menu extends AppCompatActivity {
         textView.setVisibility(mainMenuVisibility);
         scoreTextView.setVisibility(mainMenuVisibility);
     }
+
+    private void showInstructionsDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.instructions, null);
+
+        TextView instructionsText = dialogView.findViewById(R.id.instructions_text);
+        instructionsText.setText("Welcome to Blackjack!\n\n" +
+                "Goal: Get as close as possible to 21 without going over. If you go over 21, you lose.\n\n" +
+                "You start with two cards. The dealer also gets two cards (one is hidden).\n\n" +
+                "Press 'Hit' if you want another card.\n" +
+                "Press 'Stand' if you're happy with your total and want to end your turn.\n\n" +
+                "Once you stand, the dealer will reveal their hidden card and draw more cards until reaching at least 17.\n\n" +
+                "Whoever is closer to 21 without going over wins. Good luck!");
+
+        new AlertDialog.Builder(this)
+                .setTitle("How to Play")
+                .setView(dialogView)
+                .setPositiveButton("Continue", (dialog, which) -> {
+                    String user = sharedPreferences.getString(KEY_USERNAME, null);
+                    BetAmount betAmount = new BetAmount();
+                    loadFragment(betAmount);
+                    toggleVisibility(false);
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+
+
+
 }
+
+
 
