@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.List;
@@ -15,7 +16,10 @@ public class Login_activity extends AppCompatActivity {
 
     private TextView login_button, register_login;  /* כפתורי התחברות והרשמה */
     private EditText email_login, password_login;   /* שדות קלט מייל וסיסמה */
-    private DBHelper dbHelper;                      /* גישה למסד הנתונים */
+    private DBHelper dbHelper;
+    /* גישה למסד הנתונים */
+    private String username;
+    private ImageView mute;
 
     private SharedPreferences sharedPreferences;
     private static final String PREF_NAME = "user_prefs";
@@ -42,6 +46,27 @@ public class Login_activity extends AppCompatActivity {
         register_login.setOnClickListener(v -> {
             startActivity(new Intent(Login_activity.this, Register_activity.class));  /* מעבר למסך הרשמה */
         });
+        mute = findViewById(R.id.mute);
+        mute.setOnClickListener(v -> {
+            // המרה לאחוזים (0.0-1.0)
+            if (mute.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.soundoff).getConstantState()) {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundon));
+                if (username != null) {  // אם המשתמש מחובר
+                    // טעינת העדפות ווליום של המשתמש מהמאגרים
+                    int musicVolume = dbHelper.getMusicVolume(username);
+                    // הגדרת עוצמת המוזיקה בשירות
+                    MusicService.setMusicVolume(musicVolume / 100f);
+                } else {
+                    MusicService.setMusicVolume(100 / 100f);
+                }
+            }
+            else {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundoff));
+                MusicService.setMusicVolume(0 / 100f);  // המרה לאחוזים (0.0-1.0)
+            }
+        });
+
+
     }
 
     // פונקציה לטיפול בתהליך ההתחברות
@@ -74,5 +99,7 @@ public class Login_activity extends AppCompatActivity {
             Toast.makeText(this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }
 

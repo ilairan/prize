@@ -42,6 +42,7 @@ public class FirstFragment extends Fragment {
     private int playerScoreInDb;
 
     private DBHelper dbHelper;
+    private ImageView mute;
 
     @Nullable
     @Override
@@ -94,8 +95,28 @@ public class FirstFragment extends Fragment {
         // לחצנים
         hitButton.setOnClickListener(v -> playerHit());
         standButton.setOnClickListener(v -> playerStand());
+        mute = view.findViewById(R.id.mute);
+        mute.setOnClickListener(v -> {
+            // המרה לאחוזים (0.0-1.0)
+            if (mute.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.soundoff).getConstantState()) {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundon));
+                if (username != null) {  // אם המשתמש מחובר
+                    // טעינת העדפות ווליום של המשתמש מהמאגרים
+                    int musicVolume = dbHelper.getMusicVolume(username);
+                    // הגדרת עוצמת המוזיקה בשירות
+                    MusicService.setMusicVolume(musicVolume / 100f);
+                } else {
+                    MusicService.setMusicVolume(100 / 100f);
+                }
+            }
+            else {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundoff));
+                MusicService.setMusicVolume(0 / 100f);  // המרה לאחוזים (0.0-1.0)
+            }
+        });
 
         return view;
+
     }
 
     private void startGame() {

@@ -2,24 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/background_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#9C3903"
     android:orientation="vertical"
     tools:context=".Register_activity"
-    android:id="@+id/background_layout"
     tools:ignore="ExtraText">
-
->
-
-
-
 
     <TextView
         android:layout_width="245dp"
         android:layout_height="119dp"
         android:layout_gravity="center"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/font1"
         android:gravity="center"
         android:text="Prize"
@@ -30,56 +25,52 @@
         android:id="@+id/fullname_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
         android:hint="Enter full name"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="50dp"
-        android:textSize="20dp"
-        android:layout_marginEnd="50dp"/>
+        android:layout_marginEnd="50dp"
+        android:textSize="20sp" />
+
     <EditText
         android:id="@+id/email_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
         android:hint="Enter email"
         android:layout_marginTop="5dp"
         android:layout_marginStart="50dp"
-        android:textSize="20dp"
-        android:layout_marginEnd="50dp"/>
+        android:layout_marginEnd="50dp"
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/phone_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
         android:hint="Enter phone number"
         android:layout_marginTop="5dp"
         android:layout_marginStart="50dp"
-        android:textSize="20dp"
-        android:layout_marginEnd="50dp"/>
-
-
+        android:layout_marginEnd="50dp"
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/password_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
         android:hint="Enter password"
         android:layout_marginTop="5dp"
         android:layout_marginStart="50dp"
-        android:textSize="20dp"
-        android:layout_marginEnd="50dp"/>
+        android:layout_marginEnd="50dp"
+        android:textSize="20sp" />
+
     <EditText
         android:id="@+id/password_repeat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
-        android:hint="repeat password"
+        android:hint="Repeat password"
         android:layout_marginTop="5dp"
         android:layout_marginStart="50dp"
-        android:textSize="20dp"
-        android:layout_marginEnd="50dp"/>
+        android:layout_marginEnd="50dp"
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/register_button"
         android:layout_width="219dp"
@@ -100,8 +91,7 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/font1"
         android:gravity="center"
-        android:text="alredy signed up
-press here"
+        android:text="Already signed up?\nPress here"
         android:textColor="#000000"
         android:textSize="40dp" />
 
@@ -113,8 +103,16 @@ press here"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/font1"
         android:gravity="center"
-        android:text="advence"
+        android:text="Advance"
         android:textColor="#000000"
         android:textSize="80dp" />
 
+    <ImageView
+        android:id="@+id/mute"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="300dp"
+        android:src="@drawable/soundon"
+        android:contentDescription="Mute Button" />
 </LinearLayout>

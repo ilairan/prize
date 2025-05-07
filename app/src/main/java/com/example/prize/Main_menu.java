@@ -5,6 +5,7 @@ import android.content.SharedPreferences;  /* ייבוא SharedPreferences */
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ public class Main_menu extends AppCompatActivity {
 
     // משתני ממשק
     private FrameLayout frameLayout;
+    private ImageView mute;
     private TextView settingsbutton, startbutton, button3, textView, scoreTextView, medals;
 
     private DBHelper dbHelper;  // גישה למסד הנתונים
@@ -74,6 +76,26 @@ public class Main_menu extends AppCompatActivity {
             loadFragment(new StatisticsFragment());  // טעינת פרגמנט סטטיסטיקות
             toggleVisibility(false);  // הסתרת תפריט ראשי
         });
+        mute = findViewById(R.id.mute);
+        mute.setOnClickListener(v -> {
+            // המרה לאחוזים (0.0-1.0)
+            if (mute.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.soundoff).getConstantState()) {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundon));
+                if (username != null) {  // אם המשתמש מחובר
+                    // טעינת העדפות ווליום של המשתמש מהמאגרים
+                    int musicVolume = dbHelper.getMusicVolume(username);
+                    // הגדרת עוצמת המוזיקה בשירות
+                    MusicService.setMusicVolume(musicVolume / 100f);
+                } else {
+                    MusicService.setMusicVolume(100 / 100f);
+                }
+            }
+            else {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundoff));
+                MusicService.setMusicVolume(0 / 100f);  // המרה לאחוזים (0.0-1.0)
+            }
+        });
+
     }
 
     // פונקציה לטעינת פרגמנט

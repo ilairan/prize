@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ public class BetAmount extends Fragment {
 
     private static final String PREF_NAME = "user_prefs";  /* שם קובץ ה-SharedPreferences */
     private static final String KEY_USERNAME = "username"; /* מפתח לשם המשתמש */
+    private ImageView mute;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +89,25 @@ public class BetAmount extends Fragment {
             transaction.replace(R.id.frameLayout, shakeFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        });
+        mute = view.findViewById(R.id.mute);
+        mute.setOnClickListener(v -> {
+            // המרה לאחוזים (0.0-1.0)
+            if (mute.getDrawable().getConstantState() == getResources().getDrawable(R.drawable.soundoff).getConstantState()) {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundon));
+                if (username != null) {  // אם המשתמש מחובר
+                    // טעינת העדפות ווליום של המשתמש מהמאגרים
+                    int musicVolume = dbHelper.getMusicVolume(username);
+                    // הגדרת עוצמת המוזיקה בשירות
+                    MusicService.setMusicVolume(musicVolume / 100f);
+                } else {
+                    MusicService.setMusicVolume(100 / 100f);
+                }
+            }
+            else {
+                mute.setImageDrawable(getResources().getDrawable(R.drawable.soundoff));
+                MusicService.setMusicVolume(0 / 100f);  // המרה לאחוזים (0.0-1.0)
+            }
         });
 
         return view;

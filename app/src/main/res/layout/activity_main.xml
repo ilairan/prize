@@ -46,4 +46,14 @@
         android:textSize="40dp" />
 
 
+    <ImageView
+        android:id="@+id/mute"
+        android:layout_width="60sp"
+        android:layout_height="60sp"
+        android:src="@drawable/soundon"
+        android:layout_marginTop="200sp"
+        android:layout_marginLeft="300sp"
+        />
+
+
 </LinearLayout>
